@@ -1,51 +1,20 @@
 package seedu.address.logic.commands;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_REMARK_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_REMARK_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
-import static seedu.address.logic.commands.RemarkCommand.MESSAGE_ARGUMENTS;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
-import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
-import static seedu.address.model.person.Remark;
 
+import org.junit.jupiter.api.Test;
+
+import seedu.address.model.person.Remark;
+
+/**
+ * Contains unit tests for {@code RemarkCommand}.
+ */
 public class RemarkCommandTest {
-    public static final String MESSAGE_NOT_IMPLEMENTED_YET = "Remark command not implemented yet";
-
-    @Test
-    public void execute() {
-        final Remark remark = new Remark(VALID_REMARK_AMY);
-        assertCommandFailure(new RemarkCommand(INDEX_FIRST_PERSON, remark), model, String.format(MESSAGE_ARGUMENTS, INDEX_FIRST_PERSON.getOneBased(), remark));
-    }
-
-    @Test
-    public void parse_indexSpecified_success() {
-        // have remark
-        Index targetIndex = INDEX_FIRST_PERSON;
-        String userInput = targetIndex.getOneBased() + " " + PREFIX_REMARK + nonEmptyRemark;
-        RemarkCommand expectedCommand = new RemarkCommand(INDEX_FIRST_PERSON, nonEmptyRemark);
-        assertParseSuccess(parser, userInput, expectedCommand);
-
-        // no remark
-        userInput = targetIndex.getOneBased() + " " + PREFIX_REMARK;
-        expectedCommand = new RemarkCommand(INDEX_FIRST_PERSON, "");
-        assertParseSuccess(parser, userInput, expectedCommand);
-    }
-
-    @Test
-    public void parse_missingCompulsoryField_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, RemarkCommand.MESSAGE_USAGE);
-
-        // no parameters
-        assertParseFailure(parser, RemarkCommand.COMMAND_WORD, expectedMessage);
-
-        // no index
-        assertParseFailure(parser, RemarkCommand.COMMAND_WORD + " " + nonEmptyRemark, expectedMessage);
-    }
 
     @Test
     public void equals() {
