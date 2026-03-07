@@ -9,7 +9,7 @@
         "project-team": "Project team",
         "toh-hong-shen": "Toh Hong Shen",
         "jane-doe": "Jane Doe",
-        "johnny-doe": "Johnny Doe",
+        "yap-ming-yang": "Yap Ming Yang",
         "jean-doe": "Jean Doe",
         "derrick-low": "Derrick Low"
       },
@@ -146,6 +146,11 @@
       "headings": {
         "project-addressbook-level-3": "Project: AddressBook Level 3"
       },
+      "headingKeywords": {}
+    },
+    {
+      "src": "team/mingjelly.md",
+      "headings": {},
       "headingKeywords": {}
     }
   ]
