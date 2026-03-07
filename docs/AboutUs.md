@@ -11,15 +11,15 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Toh Hong Shen
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/ths1959.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](https://github.com/ths1959)]
+[[portfolio](team/ths1959.md)]
 
-* Role: Project Advisor
+* **Role**: Team Lead
+* **Responsibilities**: Overall project coordination, In charge of Storage
 
 ### Jane Doe
 
@@ -31,11 +31,11 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Team Lead
 * Responsibilities: UI
 
-### Johnny Doe
+### Yap Ming Yang
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/mingjelly.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](http://github.com/mingjelly)] [[portfolio](team/mingjelly.md)]
 
 * Role: Developer
 * Responsibilities: Data
@@ -48,14 +48,14 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/poise3.md)]
 
 * Role: Developer
-* Responsibilities: Implementing feature requests
+* Responsibilities: Dev Ops + Threading
 
-### James Doe
+### Derrick Low
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/derrikzzz.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/derrikzzz)]
+[[portfolio](team/derrikzzz.md)]
 
-* Role: Developer
-* Responsibilities: UI
+- Role: Developer
+- Responsibilities: Integration

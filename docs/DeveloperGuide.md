@@ -4,9 +4,8 @@
   pageNav: 3
 ---
 
-# AB-3 Developer Guide
+# TripLog Developer Guide
 
-<!-- * Table of Contents -->
 <page-nav-print />
 
 --------------------------------------------------------------------------------------------------------------------
@@ -164,9 +163,9 @@ This section describes some noteworthy details on how certain features are imple
 
 The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
 
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
+* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
+* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
+* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
 
 These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
 
@@ -216,7 +215,7 @@ Similarly, how an undo operation goes through the `Model` component is shown bel
 
 <puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
 
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
+The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
 
 <box type="info" seamless>
 
@@ -274,58 +273,105 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
+* has a need to manage a significant number of trips and travel records
+* wants a way to log trips, destinations and activities in an organized and structured manner
 * prefer desktop apps over other types
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**:
 
+- Productivity: Enable Travelers to quickly record and retrieve travel experiences in a fast, distraction-free CLI. Record and search trips without switching apps or dealing with cluttered interfaces.
+- Organization: Tag and jot quick notes about the destinations. Organize entries with tags for easy filtering and retrieval later.
+- Simplicity: Lightweight solution and bypass slow, feature-heavy mobile travel apps. No installation of heavy software; runs directly in the terminal with minimal setup.
+- Privacy: Fully local application with no cloud communication. No risk of data leakage or slow network latency.
 
 ### User stories
 
-Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
+Priorities: Essential (must have) MVP, High (expected to have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …​                   | I want to …​                                                     | So that I can…​                                              |
+|----------|---------------------------|------------------------------------------------------------------|--------------------------------------------------------------|
+| `MVP`    | traveler                  | add a trip entry with just a location name                       | record where I am                                            |
+| `MVP`    | software user             | delete wrong entries                                             | my travel log remains accurate and clean                     |
+| `MVP`    | traveler                  | tag trips based on category                                      | be aware of the activity/purpose of each trip quickly        |
+| `MVP`    | frequent traveler         | search my entries / logs for tags                                | see whether i have done a specific activity in that region   |
+| `* * *`  | traveler                  | update the description of a trip entry                           | efficiently correct typos or add more detail to a trip       |
+| `* * *`  | traveler                  | list all trips sorted by date                                    | view my travel history chronologically                       |
+| `* * *`  | new user                  | use a generic help command to recover the syntax of the commands | use the CLI without the need to memorise all instructions    |
+| `* * *`  | traveler                  | add start and end dates to a trip                                | distinguish short trips from long journeys                   |
+| `* * *`  | traveler                  | view trips taken within a given date range                       | analyze travel patterns over time                            |
+| `* * *`  | traveler                  | record multiple cities in one trip                               | log complex itineraries                                      |
+| `* *`    | traveler                  | mark a trip as "Completed"                                       | distinguish between upcoming plans and past trips            |
+| `* *`    | returning traveler        | mark activities in a region as missing or haven't tried yet      | search for it and pick up the experience in an upcoming plan |
+| `* *`    | traveler                  | attach short personal notes to a trip                            | remember meaningful experiences beyond basic facts           |
+| `*`      | photographer traveler     | link to photos in the local file system                          | retrieve relevant photos quickly                             |
+| `*`      | budget-conscious traveler | track the expenses at each destination                           | analyze the budget and plan accurately next time             |
 
 *{More to be added}*
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is `TripLog` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: Add an experience log to a trip**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1.  User requests to list trips.
+2.  TripLog shows a list of trips.
+3.  User finds the index of the specific trip they want to log an experience for (e.g., Tokyo trip).
+4.  User requests to add a note/experience (e.g., "Great sushi at Tsukiji") to that specific trip index.
+5.  TripLog adds the experience and confirms the log entry.
 
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
-
+* 2a. The trip list is empty.
   Use case ends.
 
+* 4a. The given index is invalid.
+    * 4a1. TripLog shows an error message.
+    * Use case resumes at step 2.
+
+* 4b. The experience description is missing.
+    * 4b1. TripLog shows an error message.
+    * Use case resumes at step 3.
+
+**Use case: Filter trips by category tag**
+
+**MSS**
+
+1.  User requests to view all trips associated with a specific tag (e.g., `work`).
+2.  TripLog searches the local data for trips containing that tag.
+3.  TripLog displays a filtered list of matching travel entries.
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. No trips match the requested tag.
+    * 2a1. TripLog shows a message indicating no results found.
+    * Use case ends.
+
+**Use case: Delete a canceled trip entry**
+
+**MSS**
+
+1.  User requests to list trips.
+2.  TripLog shows a list of trips.
+3.  User identifies the trip to be removed and requests to delete it by index.
+4.  TripLog deletes the entry and updates the local storage.
+
+    Use case ends.
+
+**Extensions**
+
 * 3a. The given index is invalid.
-
-    * 3a1. AddressBook shows an error message.
-
-      Use case resumes at step 2.
-
-*{More to be added}*
+    * 3a1. TripLog shows an error message.
+    * Use case resumes at step 2.
 
 ### Non-Functional Requirements
 
@@ -337,8 +383,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+- **Mainstream OS**: Windows, Linux, Unix, MacOS
+- **Trip**: Travel entry defined by destination, start date, and end date
+- **Destination**: Primary location of a trip (e.g "Mount Fuji"), mapped to the Name field
+- **Experience Log**: Descriptive note added to a trip to record activities or reminders
+- **Category Tag**: Label for grouping trips by purpose (e.g work) or region (e.g Japan)
 
 --------------------------------------------------------------------------------------------------------------------
 
