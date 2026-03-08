@@ -26,7 +26,7 @@ class JsonAdaptedTrip {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Trip's %s field is missing!";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
-    
+
     private final String name;
     private final String phone;
     private final String email;
