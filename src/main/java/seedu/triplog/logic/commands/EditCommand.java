@@ -102,7 +102,7 @@ public class EditCommand extends Command {
         Address updatedAddress = editTripDescriptor.getAddress().orElse(tripToEdit.getAddress());
         Set<Tag> updatedTags = editTripDescriptor.getTags().orElse(tripToEdit.getTags());
         TripDate updatedStartDate = editTripDescriptor.getStartDate().orElse(tripToEdit.getStartDate());
-        TripDate updatedEndDate = editTripDescriptor.getEndDate().orElse(tripToEdit.getStartDate());
+        TripDate updatedEndDate = editTripDescriptor.getEndDate().orElse(tripToEdit.getEndDate());
 
         return new Trip(updatedName, updatedPhone, updatedEmail, updatedAddress,
                         updatedTags, updatedStartDate, updatedEndDate);
