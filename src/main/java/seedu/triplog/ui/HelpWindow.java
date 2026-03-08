@@ -34,19 +34,19 @@ public class HelpWindow extends UiPart<Stage> {
         + "  Removes the trip at the given list position.\n"
         + "  INDEX must be a positive integer (1, 2, 3, …)\n"
         + "  e.g.  delete 2";
-    
+
     public static final String TAG_USAGE =
         "tag <index> <tag-name>\n"
         + "  Adds a keyword tag to an existing trip.\n"
         + "  tag-name must be alphanumeric. Use quotes for tags with spaces.\n"
         + "  e.g.  tag 1 nature    or    tag 1 \"night market\"";
-    
+
     public static final String LIST_USAGE =
         "list\n"
         + "  Displays all trip entries.\n"
         + "  e.g.  list";
 
-    public static final String EXIT_NOTE = 
+    public static final String EXIT_NOTE =
         "To exit the help window, press Q or ESCAPE, or click the close button.";
 
     @FXML
