@@ -41,8 +41,6 @@ class JsonAdaptedTrip {
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.startDate = startDate;
-        this.endDate = endDate;
         if (tags != null) {
             this.tags.addAll(tags);
         }
