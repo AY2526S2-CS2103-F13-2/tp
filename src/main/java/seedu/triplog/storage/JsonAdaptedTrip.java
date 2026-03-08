@@ -134,7 +134,7 @@ class JsonAdaptedTrip {
             modelEndDate = new TripDate(endDate);
         }
 
-        final Set<Tag> modelTags = new HashSet<>(personTags);
+        final Set<Tag> modelTags = new HashSet<>(tripTags);
         return new Trip(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStartDate, modelEndDate);
     }
 
