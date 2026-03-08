@@ -1,7 +1,7 @@
-package seedu.address.logic.parser;
+package seedu.triplog.logic.parser;
 
-import seedu.address.logic.commands.HelpCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.triplog.logic.commands.HelpCommand;
+import seedu.triplog.logic.parser.exceptions.ParseException;
 
 /**
  * Parses input arguments and create a HelpCommand
