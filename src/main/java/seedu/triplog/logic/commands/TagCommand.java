@@ -1,6 +1,7 @@
 package seedu.triplog.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.triplog.model.Model.PREDICATE_SHOW_ALL_TRIPS;
 
 import java.util.List;
 
@@ -60,6 +61,9 @@ public class TagCommand extends Command {
         if (!tripToTag.isSameTrip(tripWithUpdatedTag) && model.hasTrip(tripWithUpdatedTag)) {
             throw new CommandException(MESSAGE_DUPLICATE_TRIP);
         }
+
+        model.setTrip(tripToTag, tripWithUpdatedTag);
+        model.updateFilteredTripList(PREDICATE_SHOW_ALL_TRIPS);
 
         return new CommandResult(
                 String.format(
