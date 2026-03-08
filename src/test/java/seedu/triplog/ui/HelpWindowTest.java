@@ -114,5 +114,5 @@ public class HelpWindowTest {
     public void isShowing_initiallyFalse() {
         assertFalse(helpWindow.isShowing());
     }
-    
+
 }
