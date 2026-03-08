@@ -81,11 +81,18 @@ public class HelpWindow extends UiPart<Stage> {
         listUsage.setText(LIST_USAGE);
         exitNote.setText(EXIT_NOTE);
         root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.Q || event.getCode() == KeyCode.ESCAPE) {
+            if (isCloseKey(event.getCode())) {
                 hide();
                 event.consume();
             }
         });
+    }
+
+    /**
+     * Returns true if the given key code should close the help window.
+     */
+    static boolean isCloseKey(KeyCode code) {
+        return code == KeyCode.Q || code == KeyCode.ESCAPE;
     }
 
     /**
