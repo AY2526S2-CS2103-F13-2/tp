@@ -4,6 +4,8 @@ import java.util.logging.Logger;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seedu.triplog.commons.core.LogsCenter;
 
@@ -44,8 +46,8 @@ public class HelpWindow extends UiPart<Stage> {
         + "  Displays all trip entries.\n"
         + "  e.g.  list";
 
-    
-
+    public static final String EXIT_NOTE = 
+        "To exit the help window, press Q or ESCAPE, or click the close button.";
 
     @FXML
     private Label prefixNote;
@@ -62,6 +64,9 @@ public class HelpWindow extends UiPart<Stage> {
     @FXML
     private Label listUsage;
 
+    @FXML
+    private Label exitNote;
+
     /**
      * Creates a new HelpWindow.
      *
@@ -74,6 +79,13 @@ public class HelpWindow extends UiPart<Stage> {
         deleteUsage.setText(DELETE_USAGE);
         tagUsage.setText(TAG_USAGE);
         listUsage.setText(LIST_USAGE);
+        exitNote.setText(EXIT_NOTE);
+        root.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.Q || event.getCode() == KeyCode.ESCAPE) {
+                hide();
+                event.consume();
+            }
+        });
     }
 
     /**
