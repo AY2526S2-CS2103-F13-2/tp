@@ -1,19 +1,20 @@
 package seedu.triplog.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.triplog.logic.commands.CommandTestUtil.showTripAtIndex;
+import static seedu.triplog.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.triplog.testutil.TypicalTrips.getTypicalTripLog;
+
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.triplog.logic.commands.CommandTestUtil.showTripAtIndex;
 import seedu.triplog.model.Model;
 import seedu.triplog.model.ModelManager;
 import seedu.triplog.model.UserPrefs;
 import seedu.triplog.model.trip.Trip;
-import static seedu.triplog.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
-import static seedu.triplog.testutil.TypicalTrips.getTypicalTripLog;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
