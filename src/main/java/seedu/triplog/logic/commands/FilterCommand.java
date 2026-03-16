@@ -45,7 +45,7 @@ public class FilterCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (startDate.value.isAfter(endDate.value)) {
-            return new CommandResult(MESSAGE_START_AFTER_END);
+            throw new CommandException(MESSAGE_START_AFTER_END);
         }
         model.updateFilteredTripList(trip -> trip.getStartDate() != null && trip.getEndDate() != null
                 && trip.getStartDate().value.isAfter(startDate.value.minusDays(1))

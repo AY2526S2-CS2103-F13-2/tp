@@ -1,6 +1,8 @@
 package seedu.triplog.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.triplog.testutil.TypicalTrips.getTypicalTripLog;
@@ -31,20 +33,20 @@ public class FilterCommandTest {
         assertTrue(filterFirstCommand.equals(filterSecondCommand));
 
         // different type -> returns false
-        assertTrue(!filterFirstCommand.equals(1));
+        assertFalse(filterFirstCommand.equals(1));
 
         // null -> returns false
-        assertTrue(!filterFirstCommand.equals(null));
+        assertFalse(filterFirstCommand.equals(null));
 
         // different start date -> returns false
         FilterCommand differentStartCommand =
                 new FilterCommand(new TripDate("2025-01-01"), endDate);
-        assertTrue(!filterFirstCommand.equals(differentStartCommand));
+        assertFalse(filterFirstCommand.equals(differentStartCommand));
 
         // different end date -> returns false
         FilterCommand differentEndCommand =
                 new FilterCommand(startDate, new TripDate("2026-04-01"));
-        assertTrue(!filterFirstCommand.equals(differentEndCommand));
+        assertFalse(filterFirstCommand.equals(differentEndCommand));
     }
 
     @Test
@@ -80,16 +82,18 @@ public class FilterCommandTest {
     }
 
     @Test
-    public void execute_startDateAfterEndDate() throws CommandException {
+    public void execute_startDateAfterEndDate_throwsCommandException() {
         Model model = new ModelManager(getTypicalTripLog(), new UserPrefs());
 
         TripDate start = new TripDate("2026-03-01");
         TripDate end = new TripDate("2026-01-01");
 
         FilterCommand command = new FilterCommand(start, end);
-        CommandResult result = command.execute(model);
 
-        assertEquals(FilterCommand.MESSAGE_START_AFTER_END, result.getFeedbackToUser());
+        CommandException thrown =
+                assertThrows(CommandException.class, () -> command.execute(model));
+
+        assertEquals(FilterCommand.MESSAGE_START_AFTER_END, thrown.getMessage());
     }
 
     @Test
