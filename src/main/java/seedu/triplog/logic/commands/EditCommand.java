@@ -20,6 +20,7 @@ import seedu.triplog.commons.util.CollectionUtil;
 import seedu.triplog.commons.util.ToStringBuilder;
 import seedu.triplog.logic.Messages;
 import seedu.triplog.logic.commands.exceptions.CommandException;
+import seedu.triplog.logic.parser.exceptions.ParseException;
 import seedu.triplog.model.Model;
 import seedu.triplog.model.tag.Tag;
 import seedu.triplog.model.trip.Address;
@@ -94,7 +95,7 @@ public class EditCommand extends Command {
      * Creates and returns a {@code Trip} with the details of {@code tripToEdit}
      * edited with {@code editTripDescriptor}.
      */
-    private static Trip createEditedTrip(Trip tripToEdit, EditTripDescriptor editTripDescriptor) {
+    private static Trip createEditedTrip(Trip tripToEdit, EditTripDescriptor editTripDescriptor) throws CommandException {
         assert tripToEdit != null;
 
         Name updatedName = editTripDescriptor.getName().orElse(tripToEdit.getName());
@@ -105,8 +106,15 @@ public class EditCommand extends Command {
         TripDate updatedStartDate = editTripDescriptor.getStartDate().orElse(tripToEdit.getStartDate());
         TripDate updatedEndDate = editTripDescriptor.getEndDate().orElse(tripToEdit.getEndDate());
 
-        return new Trip(updatedName, updatedPhone, updatedEmail, updatedAddress,
-                        updatedTags, updatedStartDate, updatedEndDate);
+        Trip editedTrip;
+        try {
+            editedTrip = new Trip(updatedName, updatedPhone, updatedEmail, updatedAddress,
+                    updatedTags, updatedStartDate, updatedEndDate);
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(e.getMessage());
+        }
+
+        return editedTrip;
     }
 
     @Override
