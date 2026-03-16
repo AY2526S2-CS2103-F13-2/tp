@@ -1,0 +1,89 @@
+package seedu.triplog.logic.commands;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.triplog.testutil.TypicalTrips.getTypicalTripLog;
+
+import org.junit.jupiter.api.Test;
+
+import seedu.triplog.logic.commands.exceptions.CommandException;
+import seedu.triplog.model.Model;
+import seedu.triplog.model.ModelManager;
+import seedu.triplog.model.TripLog;
+import seedu.triplog.model.UserPrefs;
+import seedu.triplog.model.trip.TripDate;
+
+public class FilterCommandTest {
+
+    @Test
+    public void equals() {
+        TripDate startDate = new TripDate("2026-01-01");
+        TripDate endDate = new TripDate("2026-03-01");
+
+        FilterCommand filterFirstCommand = new FilterCommand(startDate, endDate);
+        FilterCommand filterSecondCommand = new FilterCommand(startDate, endDate);
+
+        // same object -> returns true
+        assertTrue(filterFirstCommand.equals(filterFirstCommand));
+
+        // same values -> returns true
+        assertTrue(filterFirstCommand.equals(filterSecondCommand));
+
+        // different type -> returns false
+        assertTrue(!filterFirstCommand.equals(1));
+
+        // null -> returns false
+        assertTrue(!filterFirstCommand.equals(null));
+
+        // different dates -> returns false
+        FilterCommand differentCommand = new FilterCommand(
+                new TripDate("2025-01-01"), new TripDate("2025-02-01"));
+        assertTrue(!filterFirstCommand.equals(differentCommand));
+    }
+
+    @Test
+    public void execute_validRange_success() throws CommandException {
+        Model model = new ModelManager(getTypicalTripLog(), new UserPrefs());
+        Model expectedModel = new ModelManager(new TripLog(model.getTripLog()), new UserPrefs());
+
+        TripDate start = new TripDate("2020-01-01");
+        TripDate end = new TripDate("2030-01-01");
+
+        FilterCommand command = new FilterCommand(start, end);
+
+        expectedModel.updateFilteredTripList(trip -> trip.getStartDate() != null
+                && trip.getEndDate() != null
+                && trip.getStartDate().value.isAfter(start.value.minusDays(1))
+                && trip.getEndDate().value.isBefore(end.value.plusDays(1)));
+
+        assertCommandSuccess(command, model, FilterCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    @Test
+    public void execute_noTripsFound() throws CommandException {
+        Model model = new ModelManager(getTypicalTripLog(), new UserPrefs());
+
+        TripDate start = new TripDate("2100-01-01");
+        TripDate end = new TripDate("2100-02-01");
+
+        FilterCommand command = new FilterCommand(start, end);
+        CommandResult result = command.execute(model);
+
+        assertEquals(FilterCommand.MESSAGE_NO_TRIPS_FOUND, result.getFeedbackToUser());
+        assertTrue(model.getFilteredTripList().isEmpty());
+    }
+
+    @Test
+    public void execute_startDateAfterEndDate() throws CommandException {
+        Model model = new ModelManager(getTypicalTripLog(), new UserPrefs());
+
+        TripDate start = new TripDate("2026-03-01");
+        TripDate end = new TripDate("2026-01-01");
+
+        FilterCommand command = new FilterCommand(start, end);
+        CommandResult result = command.execute(model);
+
+        assertEquals(FilterCommand.MESSAGE_START_AFTER_END, result.getFeedbackToUser());
+    }
+}
