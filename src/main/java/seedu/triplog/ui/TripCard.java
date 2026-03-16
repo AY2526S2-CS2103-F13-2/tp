@@ -107,4 +107,8 @@ public class TripCard extends UiPart<Region> {
     public Label getEndDateLabel() {
         return endDate;
     }
+
+    public FlowPane getTags() {
+        return tags;
+    }
 }
