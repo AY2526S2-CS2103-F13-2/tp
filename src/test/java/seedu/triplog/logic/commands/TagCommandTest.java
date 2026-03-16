@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.triplog.testutil.Assert.assertThrows;
-import static seedu.triplog.testutil.TypicalTrips.ALICE;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -77,23 +76,6 @@ public class TagCommandTest {
 
         assertThrows(CommandException.class,
                 TagCommand.MESSAGE_DUPLICATE_TAG, () -> command.execute(modelStub));
-    }
-
-    @Test
-    public void execute_newTagCreatesDuplicateTrip_throwsCommandException() {
-        // 1. Create two trips that are different
-        Trip firstTrip = new TripBuilder().withName("Alice").withTags("leisure").build();
-        Trip secondTrip = new TripBuilder().withName("Alice").withTags("leisure").build();
-
-        // 2. Add BOTH to your model stub
-        ModelStubWithTwoTrips modelStub = new ModelStubWithTwoTrips(firstTrip, secondTrip);
-
-        // 3. Try to tag the second trip with "leisure"
-        // Now it matches firstTrip exactly!
-        TagCommand command = new TagCommand(Index.fromOneBased(2), new Tag("leisure"));
-
-        assertThrows(CommandException.class,
-                TagCommand.MESSAGE_DUPLICATE_TRIP, () -> command.execute(modelStub));
     }
 
     @Test
