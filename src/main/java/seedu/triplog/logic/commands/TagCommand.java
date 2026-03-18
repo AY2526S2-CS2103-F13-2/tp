@@ -15,13 +15,13 @@ import seedu.triplog.model.trip.Trip;
 
 
 /**
- * Tags a Trip in the address book.
+ * Adds a tag to a trip in the trip log.
  */
 public class TagCommand extends Command {
 
     public static final String COMMAND_WORD = "tag";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a tag to a trip in the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a tag to a trip in the trip log. "
             + "Parameters: INDEX (must be a positive integer) "
             + "KEYWORD\n"
             + "Example: " + COMMAND_WORD + " 3 leisure";
@@ -53,7 +53,7 @@ public class TagCommand extends Command {
         Trip tripToTag = lastShownList.get(index.getZeroBased());
 
         if (tripToTag.getTags().contains(this.tag)) {
-            throw new CommandException(MESSAGE_DUPLICATE_TAG);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_TAG, this.tag, Messages.format(tripToTag)));
         }
 
         Trip tripWithUpdatedTag = new Trip(tripToTag, this.tag);
