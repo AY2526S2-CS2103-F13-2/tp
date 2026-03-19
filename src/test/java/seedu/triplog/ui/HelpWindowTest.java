@@ -65,9 +65,14 @@ public class HelpWindowTest {
     }
 
     @Test
+    public void editUsage_containsCommandName() {
+        assertTrue(HelpWindow.EDIT_USAGE.startsWith("edit "));
+    }
+
+    @Test
     public void addUsage_containsDateOptions() {
-        assertTrue(HelpWindow.ADD_USAGE.contains("/start:"));
-        assertTrue(HelpWindow.ADD_USAGE.contains("/end:"));
+        assertTrue(HelpWindow.ADD_USAGE.contains("sd/"));
+        assertTrue(HelpWindow.ADD_USAGE.contains("ed/"));
     }
 
     @Test
@@ -86,6 +91,16 @@ public class HelpWindowTest {
     }
 
     @Test
+    public void findUsage_containsCommandName() {
+        assertTrue(HelpWindow.FIND_USAGE.startsWith("find "));
+    }
+
+    @Test
+    public void filterUsage_containsCommandName() {
+        assertTrue(HelpWindow.FILTER_USAGE.startsWith("filter "));
+    }
+
+    @Test
     public void tagUsage_containsIndexAndTagNamePlaceholders() {
         assertTrue(HelpWindow.TAG_USAGE.contains("<index>"));
         assertTrue(HelpWindow.TAG_USAGE.contains("<tag-name>"));
@@ -98,7 +113,7 @@ public class HelpWindowTest {
 
     @Test
     public void prefixNote_containsPrefixFormat() {
-        assertTrue(HelpWindow.PREFIX_NOTE.contains("/key:value"));
+        assertTrue(HelpWindow.PREFIX_NOTE.contains("prefix/"));
     }
 
     @Test

@@ -13,6 +13,8 @@ import static seedu.triplog.testutil.Assert.assertThrows;
 import static seedu.triplog.testutil.TypicalTrips.ALICE;
 import static seedu.triplog.testutil.TypicalTrips.BOB;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.triplog.testutil.TripBuilder;
@@ -105,5 +107,67 @@ public class TripTest {
                 + ", startDate=" + ALICE.getStartDate() + ", endDate=" + ALICE.getEndDate()
                 + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void constructor_startDateAfterEndDate_throwsIllegalArgumentException() {
+        Name name = new Name("Test Trip");
+        Phone phone = null;
+        Email email = null;
+        Address address = null;
+
+        TripDate startDate = new TripDate("2026-12-31");
+        TripDate endDate = new TripDate("2026-01-01"); // earlier than startDate
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Trip(name, phone, email, address, Collections.emptySet(), startDate, endDate)
+        );
+    }
+
+    @Test
+    public void constructor_startDateEqualsEndDate_noException() {
+        Name name = new Name("Test Trip");
+        TripDate startDate = new TripDate("2026-01-01");
+        TripDate endDate = new TripDate("2026-01-01");
+
+        new Trip(name, null, null, null, Collections.emptySet(), startDate, endDate);
+        // No exception expected
+    }
+
+    @Test
+    public void constructor_startDateBeforeEndDate_noException() {
+        Name name = new Name("Test Trip");
+        TripDate startDate = new TripDate("2026-01-01");
+        TripDate endDate = new TripDate("2026-12-31");
+
+        new Trip(name, null, null, null, Collections.emptySet(), startDate, endDate);
+        // No exception expected
+    }
+
+    @Test
+    public void chronologicalComparator_differentDatesAndNulls_sortedChronologically() {
+        // Case 1: Both dates present, different dates
+        Trip janTrip = new Trip(new Name("A"), null, null, null, Collections.emptySet(),
+                new TripDate("2026-01-01"), null);
+        Trip febTrip = new Trip(new Name("B"), null, null, null, Collections.emptySet(),
+                new TripDate("2026-02-01"), null);
+        assertTrue(Trip.CHRONOLOGICAL_COMPARATOR.compare(janTrip, febTrip) < 0);
+
+        // Case 2: One date null, one present (null should be last)
+        Trip nullTrip = new Trip(new Name("C"), null, null, null, Collections.emptySet(), null, null);
+        assertTrue(Trip.CHRONOLOGICAL_COMPARATOR.compare(janTrip, nullTrip) < 0);
+        assertTrue(Trip.CHRONOLOGICAL_COMPARATOR.compare(nullTrip, janTrip) > 0);
+
+        // Case 3: Both dates null, alphabetical tie-break
+        Trip nullTripAlphaA = new Trip(new Name("Alpha"), null, null, null, Collections.emptySet(), null, null);
+        Trip nullTripBetaB = new Trip(new Name("Beta"), null, null, null, Collections.emptySet(), null, null);
+        assertTrue(Trip.CHRONOLOGICAL_COMPARATOR.compare(nullTripAlphaA, nullTripBetaB) < 0);
+
+        // Case 4: Same dates, alphabetical tie-break
+        Trip sameDateA = new Trip(new Name("A"), null, null, null, Collections.emptySet(),
+                new TripDate("2026-01-01"), null);
+        Trip sameDateB = new Trip(new Name("B"), null, null, null, Collections.emptySet(),
+                new TripDate("2026-01-01"), null);
+        assertTrue(Trip.CHRONOLOGICAL_COMPARATOR.compare(sameDateA, sameDateB) < 0);
     }
 }

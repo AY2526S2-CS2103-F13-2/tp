@@ -15,20 +15,19 @@ import seedu.triplog.model.trip.Trip;
 
 
 /**
- * Tags a Place in the address book.
+ * Adds a tag to a trip in the trip log.
  */
 public class TagCommand extends Command {
 
     public static final String COMMAND_WORD = "tag";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a tag to a place in the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a tag to a trip in the trip log. "
             + "Parameters: INDEX (must be a positive integer) "
             + "KEYWORD\n"
             + "Example: " + COMMAND_WORD + " 3 leisure";
 
-    public static final String MESSAGE_TAG_TRIP_SUCCESS = "New tag %1$s added to place: %2$s";
-    public static final String MESSAGE_DUPLICATE_TRIP = "This trip already exists in the trip log.";
-    public static final String MESSAGE_DUPLICATE_TAG = "Tag %1$s already exists for place: %2$s";
+    public static final String MESSAGE_TAG_TRIP_SUCCESS = "New tag %1$s added to trip: %2$s";
+    public static final String MESSAGE_DUPLICATE_TAG = "Tag %1$s already exists for trip: %2$s";
 
     private final Index index;
     private final Tag tag;
@@ -54,13 +53,10 @@ public class TagCommand extends Command {
         Trip tripToTag = lastShownList.get(index.getZeroBased());
 
         if (tripToTag.getTags().contains(this.tag)) {
-            throw new CommandException(MESSAGE_DUPLICATE_TAG);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_TAG, this.tag, Messages.format(tripToTag)));
         }
 
         Trip tripWithUpdatedTag = new Trip(tripToTag, this.tag);
-        if (!tripToTag.isSameTrip(tripWithUpdatedTag) && model.hasTrip(tripWithUpdatedTag)) {
-            throw new CommandException(MESSAGE_DUPLICATE_TRIP);
-        }
 
         model.setTrip(tripToTag, tripWithUpdatedTag);
         model.updateFilteredTripList(PREDICATE_SHOW_ALL_TRIPS);
