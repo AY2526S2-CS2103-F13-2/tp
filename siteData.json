@@ -115,6 +115,7 @@
         "adding-a-trip-add": "Adding a trip: add",
         "listing-all-trips-list": "Listing all trips : list",
         "editing-a-trip-edit": "Editing a trip : edit",
+        "tagging-a-trip-tag": "Tagging a trip : tag",
         "locating-trips-by-name-find": "Locating trips by name: find",
         "deleting-trip-s-delete": "Deleting trip(s) : delete",
         "filtering-by-date-range-filter": "Filtering by date range : filter",
