@@ -107,7 +107,8 @@ public class HelpWindow extends UiPart<Stage> {
      * @param root Stage to use as the root of the HelpWindow.
      */
     public HelpWindow(Stage root) {
-        super(FXML, root);
+        super(FXML, requireNonNullRoot(root));
+        logger.fine("Creating a new HelpWindow with provided root stage.");
         prefixNote.setText(PREFIX_NOTE);
         addUsage.setText(ADD_USAGE);
         editUsage.setText(EDIT_USAGE);
@@ -131,12 +132,29 @@ public class HelpWindow extends UiPart<Stage> {
      */
     public HelpWindow() {
         this(new Stage());
+        logger.fine("Initializing help page about the application.");
+    }
+
+    /**
+     * Ensures that the root stage is not null before passing it to the superclass constructor
+     * @param root The root stage to check.
+     * @return The non-null root stage.
+     * @throws IllegalArgumentException if the root stage is null.
+     */
+    private static Stage requireNonNullRoot(Stage root) {
+        if (root == null) {
+            throw new IllegalArgumentException("Root stage cannot be null");
+        }
+        return root;
     }
 
     /**
      * Returns true if the given key code should close the help window.
      */
     static boolean isCloseKey(KeyCode code) {
+        if (code == null) {
+            return false;
+        }
         return code == KeyCode.Q || code == KeyCode.ESCAPE;
     }
 
@@ -160,6 +178,7 @@ public class HelpWindow extends UiPart<Stage> {
      * Hides the help window.
      */
     public void hide() {
+        logger.fine("Hiding help page about the application.");
         getRoot().hide();
     }
 
@@ -167,6 +186,7 @@ public class HelpWindow extends UiPart<Stage> {
      * Focuses on the help window.
      */
     public void focus() {
+        logger.fine("Focusing on help page about the application.");
         getRoot().requestFocus();
     }
 
