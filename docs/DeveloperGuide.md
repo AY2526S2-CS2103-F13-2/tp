@@ -1,7 +1,7 @@
 ---
   layout: default.md
-  title: "Developer Guide"
-  pageNav: 3
+    title: "Developer Guide"
+    pageNav: 3
 ---
 
 # TripLog Developer Guide
@@ -157,6 +157,32 @@ Classes used by multiple components are in the `seedu.triplog.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### List and Multi-Key Sorting
+
+#### Implementation
+
+The sorting mechanism is implemented using a **Comparator Factory** pattern within `ListCommand`. The application supports dynamic reordering based on four primary sort keys: `name`, `start`, `end`, and `len`.
+
+1. **`ListCommandParser`**: Intercepts the `list` command and identifies the `sort/` prefix. If no prefix is present, it defaults to chronological sorting.
+2. **Persistent Sorting**: The sort order is maintained in the `ModelManager` via a `SortedList` wrapper. Any subsequent operations (adding or editing trips) automatically re-apply the last used comparator to maintain order.
+3. **Null Handling**: All date-based comparators utilize `Comparator.nullsLast()` to ensure trips in the "Planning" stage (missing dates) do not clutter the top of the chronological timeline.
+
+### Trip Statistics Dashboard
+
+#### Implementation
+
+The trip statistics dashboard provides a temporal analysis of trips relative to `LocalDate.now()`. To ensure the dashboard remains accurate after data-modifying operations, the calculation logic is centralized:
+
+* **Centralized Logic**: The calculation logic is implemented as a `public static` method `ListCommand#calculateSummary(ObservableList<Trip>)`.
+* **Live Updates**: Data-modifying commands (`AddCommand`, `EditCommand`, and `DeleteCommand`) invoke this method during their execution.
+* **Feedback Mechanism**: The resulting summary counts are appended to the `CommandResult` feedback string. This ensures that any change to a trip's dates or the addition/removal of trips is immediately reflected in the user's result display.
+
+Criteria for temporal analysis:
+* **Upcoming**: `startDate` is after today.
+* **Ongoing**: Today falls between `startDate` and `endDate` (inclusive).
+* **Completed**: `endDate` is before today.
+* **Planning**: `startDate` is null.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
@@ -240,13 +266,13 @@ The following activity diagram summarizes what happens when a user executes a ne
 **Aspect: How undo & redo executes:**
 
 * **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
+    * Pros: Easy to implement.
+    * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the trip being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
+    * Pros: Will use less memory (e.g. for `delete`, just save the trip being deleted).
+    * Cons: We must ensure that the implementation of each individual command are correct.
 
 _{more aspects and alternatives to be added}_
 
@@ -298,7 +324,8 @@ Priorities: Essential (must have) MVP, High (expected to have) - `* * *`, Medium
 | `MVP`    | traveler                  | tag trips based on category                                      | be aware of the activity/purpose of each trip quickly        |
 | `MVP`    | frequent traveler         | search my entries / logs for tags                                | see whether i have done a specific activity in that region   |
 | `* * *`  | traveler                  | update the description of a trip entry                           | efficiently correct typos or add more detail to a trip       |
-| `* * *`  | traveler                  | list all trips sorted by date                                    | view my travel history chronologically                       |
+| `* * *`  | traveler                  | list all trips sorted by various criteria (name, date, duration) | view my travel history according to my current needs         |
+| `* * *`  | traveler                  | see a summary dashboard of my trips                              | get a high-level view of my travel status                    |
 | `* * *`  | new user                  | use a generic help command to recover the syntax of the commands | use the CLI without the need to memorise all instructions    |
 | `* * *`  | traveler                  | add start and end dates to a trip                                | distinguish short trips from long journeys                   |
 | `* * *`  | traveler                  | view trips taken within a given date range                       | analyze travel patterns over time                            |
@@ -393,6 +420,7 @@ Priorities: Essential (must have) MVP, High (expected to have) - `* * *`, Medium
 - **Destination**: Primary location of a trip (e.g "Mount Fuji"), mapped to the Name field
 - **Experience Log**: Descriptive note added to a trip to record activities or reminders
 - **Category Tag**: Label for grouping trips by purpose (e.g work) or region (e.g Japan)
+- **Duration**: The total days between the start and end date of a trip.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -411,40 +439,56 @@ testers are expected to do more *exploratory* testing.
 
 1. Initial launch
 
-   1. Download the jar file and copy into an empty folder
+    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+    1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
 
 1. Saving window preferences
 
-   1. Resize the window to an optimum size. Move the window to a different location. Close the window.
+    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
+    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-1. _{ more test cases …​ }_
+### Listing, Sorting, and Statistics
+
+1. Initial setup
+    1. Add a variety of trips:
+        - Past: `add n/History sd/2020-01-01 ed/2020-01-05`
+        - Ongoing: `add n/Current Trip sd/2026-03-20 ed/2026-03-30` (assuming today is 2026-03-22)
+        - Future: `add n/Future Trip sd/2026-12-01 ed/2026-12-10`
+        - Planning: `add n/Bucket List Ideas`
+
+2. Testing Sort Keys
+    1. Test case: `list sort/name`<br>
+       Expected: Trips are sorted alphabetically by name. Summary dashboard counts are displayed correctly in the result box.
+    2. Test case: `list sort/len`<br>
+       Expected: Trips are sorted by duration (longest first). "Current Trip" (10 days) should appear before "History" (4 days).
+    3. Test case: `list sort/price`<br>
+       Expected: Error message "Invalid sort key! Supported keys: name, start, end, len".
+
+3. Testing Persistence
+    1. Prerequisites: Multiple trips in list.
+    2. Test case: Execute `list sort/name`, then `add n/B-Destination`.
+       Expected: The new trip is added and automatically positioned in alphabetical order.
 
 ### Deleting a trip
 
 1. Deleting a trip while all trips are being shown
 
-   1. Prerequisites: List all trips using the `list` command. Multiple trips in the list.
+    1. Prerequisites: List all trips using the `list` command. Multiple trips in the list.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+    1. Test case: `delete 1`<br>
+       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
 
-   1. Test case: `delete 0`<br>
-      Expected: No trip is deleted. Error details shown in the status message. Status bar remains the same.
+    1. Test case: `delete 0`<br>
+       Expected: No trip is deleted. Error details shown in the status message. Status bar remains the same.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
-
-1. _{ more test cases …​ }_
+    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+       Expected: Similar to previous.
 
 ### Saving data
 
 1. Dealing with missing/corrupted data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
+    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_

@@ -1,7 +1,7 @@
 ---
   layout: default.md
-  title: "User Guide"
-  pageNav: 3
+    title: "User Guide"
+    pageNav: 3
 ---
 
 # TripLog User Guide
@@ -27,13 +27,13 @@ TripLog is a **desktop app for managing trips, optimized for use via a Command L
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
-   - `list` : Lists all trips.
-   * `add n/Tokyo, Japan sd/2026-03-10 ed/2026-03-20` : Adds a trip to Tokyo.
+    - `list` : Lists all trips.
+    * `add n/Tokyo, Japan sd/2026-03-10 ed/2026-03-20` : Adds a trip to Tokyo.
 
-   * `delete 3` : Deletes the 3rd trip shown in the current list.
+    * `delete 3` : Deletes the 3rd trip shown in the current list.
 
-   * `clear` : Deletes all entries.
-   - `exit` : Exits the app.
+    * `clear` : Deletes all entries.
+    - `exit` : Exits the app.
 
 1. Refer to the [Features](#features) below for details of each command.
 
@@ -60,7 +60,7 @@ TripLog is a **desktop app for managing trips, optimized for use via a Command L
 - Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE`, `p/PHONE n/NAME` is also acceptable.
 
-- Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.
+- For commands that do not take parameters (such as `help`, `exit` and `clear`), extraneous parameters will be ignored.
   </box>
 
 ### Viewing help : `help`
@@ -91,13 +91,24 @@ Examples:
 
 ### Listing all trips : `list`
 
-Shows a list of all trips sorted by start date in ascending order (earliest first). Trips with no start date are shown last.
+Shows a list of all trips and a **Summary Dashboard** categorized by status (Upcoming, Ongoing, Completed, Planning).
 
-Format: `list`
+Format: `list [sort/KEY]`
 
-Example:
+- By default, trips are sorted by **start date** in ascending order.
+- Trips with no start date are shown last.
+- The sort order is **persistent**: adding or editing trips will maintain the last chosen sort order.
 
-- `list` — displays all trips ordered from earliest to latest start date
+Supported `KEY` values:
+- `name`: Sorts alphabetically by destination name.
+- `start`: Sorts by start date (earliest first).
+- `end`: Sorts by end date (earliest first).
+- `len`: Sorts by duration of the trip (longest first).
+
+Examples:
+- `list` — displays all trips ordered from earliest to latest start date.
+- `list sort/name` — displays all trips in alphabetical order.
+- `list sort/len` — displays all trips starting with the longest durations.
 
 ### Editing a trip : `edit`
 
@@ -210,10 +221,10 @@ Filter trips by a given date range.
 
 Format: `filter sd/START_DATE ed/END_DATE`
 
-* Update the displayed list with trips satisfying this criteria: 
-START_DATE <= trip start date (required) <= trip end date (optional) <= END_DATE
+* Update the displayed list with trips satisfying this criteria:
+  START_DATE <= trip start date (required) <= trip end date (optional) <= END_DATE
 * START_DATE and END_DATE must be provided in YYYY-MM-DD format.
-* Ignores existing trip logs without starting date present 
+* Ignores existing trip logs without starting date present
 
 Examples:
 
@@ -270,10 +281,10 @@ _Details coming soon ..._
 
 | Action     | Format, Examples                                                                                                                                                         |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Add**    | `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 sd/2026-01-01 t/friend` |
-| **Clear**  | `clear`                                                                                                                                   |
+| **Add** | `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 sd/2026-01-01 t/friend` |
+| **Clear** | `clear`                                                                                                                                   |
 | **Delete** | `delete INDEX`<br> e.g., `delete 3`                                                                                                       |
-| **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com` |
-| **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tokyo Osaka`                                                                                                              |
-| **List**   | `list`                                                                                                                                                                   |
-| **Help**   | `help`                                                                                                                                                                   |
+| **Edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com` |
+| **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tokyo Osaka`                                                                                                              |
+| **List** | `list [sort/KEY]` <br> e.g., `list sort/name`                                                                                                                            |
+| **Help** | `help`                                                                                                                                                                   |

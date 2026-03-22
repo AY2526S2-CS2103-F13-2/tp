@@ -61,9 +61,11 @@ public class HelpWindow extends UiPart<Stage> {
                     + "  e.g. filter sd/2026-01-01 ed/2026-03-31";
 
     public static final String LIST_USAGE =
-            "list\n"
-                    + "  Displays all trip entries.\n"
-                    + "  e.g.  list";
+            "list [sort/KEY]\n"
+                    + "  Displays all trip entries with a summary dashboard. KEY can be: name, start, end, len.\n"
+                    + "  e.g.  list\n"
+                    + "        list sort/name\n"
+                    + "        list sort/len";
 
     public static final String EXIT_NOTE =
             "To exit the help window, press Q or ESCAPE, or click the close button.";
