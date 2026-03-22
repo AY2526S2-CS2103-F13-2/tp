@@ -161,50 +161,54 @@
 }
 
 .list-cell:filled:even {
-    -fx-background-color: #3c3e3f;
+    -fx-background-color: -tl-bg-list-even;
 }
 
 .list-cell:filled:odd {
-    -fx-background-color: #515658;
+    -fx-background-color: -tl-bg-list-odd;
 }
 
 .list-cell:filled:selected {
-    -fx-background-color: #424d5f;
+    -fx-background-color: -tl-bg-list-selected;
 }
 
 .list-cell:filled:selected #cardPane {
-    -fx-border-color: #3e7b91;
+    -fx-border-color: -tl-accent;
     -fx-border-width: 1;
 }
 
 .list-cell .label {
-    -fx-text-fill: white;
+    -fx-text-fill: -tl-text-body;
 }
+
+/* ── Trip Card Labels ─────────────────────────────────────── */
 
 .cell_big_label {
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 16px;
-    -fx-text-fill: #010504;
+    -fx-text-fill: -tl-text-body;
 }
 
 .cell_small_label {
     -fx-font-family: "Segoe UI";
     -fx-font-size: 13px;
-    -fx-text-fill: #010504;
+    -fx-text-fill: -tl-text-body;
 }
 
+/* ── Panels ───────────────────────────────────────────────── */
+
 .stack-pane {
-     -fx-background-color: derive(#1d1d1d, 20%);
+     -fx-background-color: -tl-bg-panel;
 }
 
 .pane-with-border {
-     -fx-background-color: derive(#1d1d1d, 20%);
-     -fx-border-color: derive(#1d1d1d, 10%);
+     -fx-background-color: -tl-bg-panel;
+     -fx-border-color: -tl-border-panel;
      -fx-border-top-width: 1px;
 }
 
 .status-bar {
-    -fx-background-color: derive(#1d1d1d, 30%);
+    -fx-background-color: -tl-bg-panel;
 }
 
 .result-display {
