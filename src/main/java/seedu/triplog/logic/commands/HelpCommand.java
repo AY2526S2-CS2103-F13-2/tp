@@ -69,7 +69,7 @@ public class HelpCommand extends Command {
     }
 
     public HelpCommand(String argument) {
-        this.argument = argument == null ? "" : argument.trim();
+        this.argument = argument.trim();
     }
 
     @Override
