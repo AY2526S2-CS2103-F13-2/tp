@@ -93,7 +93,7 @@ public class HelpWindow extends UiPart<Stage> {
     }
 
     /**
-     * Ensures that the root stage is not null before passing it to the superclass constructor
+     * Ensures that the root stage is not null before passing it to the superclass constructor.
      * @param root The root stage to check.
      * @return The non-null root stage.
      * @throws IllegalArgumentException if the root stage is null.
@@ -146,5 +146,4 @@ public class HelpWindow extends UiPart<Stage> {
         logger.fine("Focusing on help page about the application.");
         getRoot().requestFocus();
     }
-
 }
