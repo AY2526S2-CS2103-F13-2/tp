@@ -1,0 +1,42 @@
+/* MainWindowTitle.css */
+.main-title {
+    -fx-font-family: "Segoe UI Semibold"; /* bold */
+    -fx-font-size: 20pt;                 /* larger font size */
+    -fx-font-weight: bold;               /* ensures bold */
+    -fx-text-fill: black;                /* black text */
+    -fx-padding: 5 0 5 10;             /* top, right, bottom, left */
+}
+
+/* Make MenuBar transparent so background image shows through */
+/* Rounded bubble behind File/Help menu */
+/* Left bubble (File) — prominent orange */
+/* Left bubble (File) — lighter orange */
+/* File bubble — snug padding */
+.menu-bubble-left {
+    -fx-background-color: rgba(255,165,0,0.85);
+    -fx-background-radius: 20 0 0 20;
+    -fx-padding: 2 8 2 8; /* top/right/bottom/left padding inside the bubble */
+}
+
+/* Help bubble — snug padding */
+.menu-bubble-right {
+    -fx-background-color: rgba(100,180,255,0.85);
+    -fx-background-radius: 0 20 20 0;
+    -fx-padding: 2 8 2 8;
+}
+
+/* MenuBar inside bubbles */
+.menu-bubble-left MenuBar, .menu-bubble-right MenuBar {
+    -fx-background-color: transparent;
+    -fx-padding: 0; /* no extra padding */
+}
+
+/* Menu text */
+.menu-bubble-left Menu, .menu-bubble-right Menu {
+    -fx-text-fill: black;
+    -fx-font-weight: bolder;
+}
+/* Make the MenuBar itself transparent so only the bubble shows */
+.menu-bar {
+    -fx-background-color: transparent;
+}
