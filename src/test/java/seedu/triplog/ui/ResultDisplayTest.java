@@ -2,14 +2,15 @@ package seedu.triplog.ui;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.Start;
+import org.testfx.util.WaitForAsyncUtils;
 
-import javafx.scene.Scene;
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
 
 /**
  * Verifies that the ResultDisplay correctly formats messages and icons.
@@ -20,24 +21,32 @@ public class ResultDisplayTest {
     private ResultDisplay resultDisplay;
     private TextArea resultTextArea;
 
-    @Start
-    public void start(Stage stage) {
-        resultDisplay = new ResultDisplay();
-        stage.setScene(new Scene(resultDisplay.getRoot()));
-        stage.show();
+    @BeforeAll
+    public static void initJavaFx() {
+        try {
+            Platform.startup(() -> {});
+        } catch (IllegalStateException e) {
+            // Platform already started
+        }
+    }
 
+    @BeforeEach
+    public void setUp() {
+        resultDisplay = new ResultDisplay();
         resultTextArea = (TextArea) resultDisplay.getRoot().lookup("#resultDisplay");
     }
 
     @Test
     public void setFeedbackToUser_successMessage_showsSuccessIcon() {
-        resultDisplay.setFeedbackToUser("Listed all persons");
+        Platform.runLater(() -> resultDisplay.setFeedbackToUser("Listed all persons"));
+        WaitForAsyncUtils.waitForFxEvents();
         assertTrue(resultTextArea.getText().contains("[OK]"));
     }
 
     @Test
     public void setFeedbackToUser_errorMessage_showsWarningIcon() {
-        resultDisplay.setFeedbackToUser("Unknown command entered");
+        Platform.runLater(() -> resultDisplay.setFeedbackToUser("Unknown command entered"));
+        WaitForAsyncUtils.waitForFxEvents();
         assertTrue(resultTextArea.getText().contains("[!!]"));
     }
 }
