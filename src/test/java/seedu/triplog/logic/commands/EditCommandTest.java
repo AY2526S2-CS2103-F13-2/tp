@@ -136,6 +136,31 @@ public class EditCommandTest {
     }
 
     @Test
+    public void execute_validDateOrder_success() {
+        EditTripDescriptor descriptor = new EditTripDescriptorBuilder()
+                .withStart("2026-03-10")
+                .withEnd("2026-03-20")
+                .build();
+
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_TRIP, descriptor);
+
+        Trip editedTrip = new TripBuilder(model.getFilteredTripList().get(INDEX_FIRST_TRIP.getZeroBased()))
+                .withStart("2026-03-10")
+                .withEnd("2026-03-20")
+                .build();
+
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_TRIP_SUCCESS,
+                Messages.format(editedTrip)
+        );
+
+        Model expectedModel = new ModelManager(new TripLog(model.getTripLog()), new UserPrefs());
+        expectedModel.setTrip(model.getFilteredTripList().get(INDEX_FIRST_TRIP.getZeroBased()), editedTrip);
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredTripList().size() + 1);
         EditTripDescriptor descriptor = new EditTripDescriptorBuilder().withName(VALID_NAME_BOB).build();
