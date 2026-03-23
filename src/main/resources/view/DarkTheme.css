@@ -388,6 +388,8 @@
     -fx-padding: 8 1 8 1;
 }
 
+/* ── ID-targeted Rules ────────────────────────────────────── */
+
 #cardPane {
     -fx-background-color: transparent;
     -fx-border-width: 0;
@@ -395,18 +397,21 @@
 
 #commandTypeLabel {
     -fx-font-size: 11px;
-    -fx-text-fill: #F70D1A;
+    -fx-text-fill: -tl-text-cmd-type;
 }
 
 #commandTextField {
-    -fx-background-color: transparent #383838 transparent #383838;
+    -fx-background-color: transparent -tl-bg-input transparent -tl-bg-input;
     -fx-background-insets: 0;
-    -fx-border-color: #383838 #383838 #ffffff #383838;
+    -fx-border-color: -tl-border-input -tl-border-input -tl-border-input -tl-border-input;
     -fx-border-insets: 0;
-    -fx-border-width: 1;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
     -fx-font-family: "Segoe UI Light";
     -fx-font-size: 13pt;
-    -fx-text-fill: white;
+    -fx-text-fill: -tl-text-body;
+    -fx-prompt-text-fill: -tl-text-placeholder;
 }
 
 #filterField, #personListPanel, #personWebpage {
@@ -414,9 +419,11 @@
 }
 
 #resultDisplay .content {
-    -fx-background-color: transparent, #383838, transparent, #383838;
+    -fx-background-color: transparent, -tl-bg-panel, transparent, -tl-bg-panel;
     -fx-background-radius: 0;
 }
+
+/* ── Tags ─────────────────────────────────────────────────── */
 
 #tags {
     -fx-hgap: 7;
@@ -424,10 +431,10 @@
 }
 
 #tags .label {
-    -fx-text-fill: white;
-    -fx-background-color: #3e7b91;
-    -fx-padding: 1 3 1 3;
-    -fx-border-radius: 2;
-    -fx-background-radius: 2;
+    -fx-text-fill: -tl-text-on-accent;
+    -fx-background-color: -tl-accent;
+    -fx-padding: 2 8 2 8;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
     -fx-font-size: 11;
 }
