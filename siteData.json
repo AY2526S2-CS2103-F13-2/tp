@@ -39,7 +39,6 @@
     },
     {
       "src": "DeveloperGuide.md",
-      "title": "Developer Guide",
       "headings": {
         "triplog-developer-guide": "TripLog Developer Guide",
         "acknowledgements": "Acknowledgements",
@@ -52,6 +51,7 @@
         "storage-component": "Storage component",
         "common-classes": "Common classes",
         "implementation": "Implementation",
+        "trip-statistics-and-automatic-sorting": "Trip Statistics and Automatic Sorting",
         "proposed-undo-redo-feature": "[Proposed] Undo/redo feature",
         "proposed-data-archiving": "[Proposed] Data archiving",
         "documentation-logging-testing-configuration-dev-ops": "Documentation, logging, testing, configuration, dev-ops",
@@ -63,6 +63,7 @@
         "glossary": "Glossary",
         "appendix-instructions-for-manual-testing": "Appendix: Instructions for manual testing",
         "launch-and-shutdown": "Launch and shutdown",
+        "listing-trips-and-viewing-statistics": "Listing Trips and Viewing Statistics",
         "deleting-a-trip": "Deleting a trip",
         "saving-data": "Saving data"
       },
@@ -106,7 +107,6 @@
     },
     {
       "src": "UserGuide.md",
-      "title": "User Guide",
       "headings": {
         "triplog-user-guide": "TripLog User Guide",
         "quick-start": "Quick start",
