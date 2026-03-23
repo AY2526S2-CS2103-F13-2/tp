@@ -19,6 +19,7 @@ import seedu.triplog.model.trip.Address;
 import seedu.triplog.model.trip.Email;
 import seedu.triplog.model.trip.Name;
 import seedu.triplog.model.trip.Phone;
+import seedu.triplog.model.trip.TripDate;
 
 public class ParserUtilTest {
     private static final String INVALID_NAME = "R@chel";
@@ -192,5 +193,28 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2)));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseTripDate_invalidDate_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseTripDate("2026/01/01"));
+    }
+
+    @Test
+    public void parseTripDate_invalidDate_throwsParseExceptionWithMessage() {
+        assertThrows(ParseException.class,
+                TripDate.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseTripDate("2026/01/01"));
+    }
+
+    @Test
+    public void parseTripDate_validDateWithSpaces_success() throws Exception {
+        TripDate expected = new TripDate("2026-01-01");
+        assertEquals(expected, ParserUtil.parseTripDate("  2026-01-01  "));
+    }
+
+    @Test
+    public void parseTripDate_validDate_success() throws Exception {
+        TripDate expected = new TripDate("2026-01-01");
+        assertEquals(expected, ParserUtil.parseTripDate("2026-01-01"));
     }
 }
