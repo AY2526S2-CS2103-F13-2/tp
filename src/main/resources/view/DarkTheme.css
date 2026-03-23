@@ -166,10 +166,18 @@
 
 .list-cell:filled:even {
     -fx-background-color: -tl-bg-list-even;
+    -fx-border-color: transparent transparent -tl-border-separator transparent;
+    -fx-border-width: 0 0 3 0;
 }
 
 .list-cell:filled:odd {
     -fx-background-color: -tl-bg-list-odd;
+    -fx-border-color: transparent transparent -tl-border-separator transparent;
+    -fx-border-width: 0 0 3 0;
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
 }
 
 .list-cell:filled:selected {
