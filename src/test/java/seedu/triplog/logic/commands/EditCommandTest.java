@@ -12,6 +12,7 @@ import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.triplog.logic.commands.CommandTestUtil.showTripAtIndex;
 import static seedu.triplog.logic.commands.EditCommand.MESSAGE_EDIT_TRIP_SUCCESS;
+import static seedu.triplog.model.trip.Trip.MESSAGE_INVALID_DATE_ORDER;
 import static seedu.triplog.testutil.TypicalIndexes.INDEX_FIRST_TRIP;
 import static seedu.triplog.testutil.TypicalIndexes.INDEX_SECOND_TRIP;
 import static seedu.triplog.testutil.TypicalTrips.getTypicalTripLog;
@@ -123,6 +124,47 @@ public class EditCommandTest {
                 new EditTripDescriptorBuilder(tripInList).build());
 
         assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_TRIP);
+    }
+
+    @Test
+    public void execute_invalidDateOrder_failure() {
+        // create descriptor with invalid date order
+        EditTripDescriptor descriptor = new EditTripDescriptorBuilder()
+                .withStart("2026-03-20")
+                .withEnd("2026-03-10") // start > end
+                .build();
+
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_TRIP, descriptor);
+
+        // should fail due to invalid date order
+        assertCommandFailure(editCommand, model, MESSAGE_INVALID_DATE_ORDER);
+    }
+
+    @Test
+    public void execute_validDateOrder_success() {
+        EditTripDescriptor descriptor = new EditTripDescriptorBuilder()
+                .withStart("2026-03-10")
+                .withEnd("2026-03-20")
+                .build();
+
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_TRIP, descriptor);
+
+        Trip editedTrip = new TripBuilder(model.getFilteredTripList().get(INDEX_FIRST_TRIP.getZeroBased()))
+                .withStart("2026-03-10")
+                .withEnd("2026-03-20")
+                .build();
+
+        Model expectedModel = new ModelManager(new TripLog(model.getTripLog()), new UserPrefs());
+        expectedModel.setTrip(model.getFilteredTripList().get(INDEX_FIRST_TRIP.getZeroBased()), editedTrip);
+
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(
+                EditCommand.MESSAGE_EDIT_TRIP_SUCCESS,
+                Messages.format(editedTrip),
+                expectedSummary
+        );
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
     @Test
