@@ -18,7 +18,7 @@ import seedu.triplog.model.tag.Tag;
  */
 public class Trip {
 
-    public static final String MESSAGE_INVALID_DATE_ORDER = "Start date must be before end date";
+    public static final String MESSAGE_INVALID_DATE_ORDER = "Start date cannot be after end date.";
 
     /**
      * Comparison logic for trips:
