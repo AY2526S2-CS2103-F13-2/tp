@@ -3,6 +3,10 @@ package seedu.triplog.logic.parser;
 import static seedu.triplog.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.triplog.logic.commands.ListCommand.PREFIX_SORT;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import seedu.triplog.logic.commands.ListCommand;
 import seedu.triplog.logic.parser.exceptions.ParseException;
 
@@ -11,26 +15,28 @@ import seedu.triplog.logic.parser.exceptions.ParseException;
  */
 public class ListCommandParser implements Parser<ListCommand> {
 
+    private static final Set<String> VALID_KEYS = new HashSet<>(Arrays.asList("name", "start", "end", "len"));
+
     /**
      * Parses the given {@code String} of arguments in the context of the ListCommand
      * and returns a ListCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * @throws ParseException if the user input does not conform to the expected format
      */
     public ListCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
+        Prefix prefixSort = new Prefix(PREFIX_SORT);
 
-        if (trimmedArgs.isEmpty()) {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, prefixSort);
+
+        if (!argMultimap.getPreamble().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+        }
+
+        if (argMultimap.getValue(prefixSort).isEmpty()) {
             return new ListCommand();
         }
 
-        if (!trimmedArgs.startsWith(PREFIX_SORT)) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_INVALID_SORT_KEY));
-        }
-
-        String sortKey = trimmedArgs.replace(PREFIX_SORT, "").trim();
-
-        if (sortKey.isEmpty()) {
+        String sortKey = argMultimap.getValue(prefixSort).get().trim().toLowerCase();
+        if (sortKey.isEmpty() || !VALID_KEYS.contains(sortKey)) {
             throw new ParseException(ListCommand.MESSAGE_INVALID_SORT_KEY);
         }
 

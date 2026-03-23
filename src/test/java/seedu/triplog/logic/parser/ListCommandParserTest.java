@@ -32,13 +32,13 @@ public class ListCommandParserTest {
 
     @Test
     public void parse_invalidPrefix_throwsParseException() {
-        // Input that doesn't use the sort/ prefix
+        // Input that doesn't use the sort/ prefix (results in a non-empty preamble)
         assertParseFailure(parser, " name",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_INVALID_SORT_KEY));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
 
         // Random arguments without prefix
         assertParseFailure(parser, " random",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_INVALID_SORT_KEY));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -46,5 +46,12 @@ public class ListCommandParserTest {
         // Prefix exists but no value provided
         assertParseFailure(parser, " sort/", ListCommand.MESSAGE_INVALID_SORT_KEY);
         assertParseFailure(parser, " sort/    ", ListCommand.MESSAGE_INVALID_SORT_KEY);
+    }
+
+    @Test
+    public void parse_unsupportedSortKey_throwsParseException() {
+        // Valid prefix but unsupported key
+        assertParseFailure(parser, " sort/invalid", ListCommand.MESSAGE_INVALID_SORT_KEY);
+        assertParseFailure(parser, " sort/123", ListCommand.MESSAGE_INVALID_SORT_KEY);
     }
 }

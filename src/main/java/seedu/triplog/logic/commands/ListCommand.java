@@ -23,8 +23,14 @@ public class ListCommand extends Command {
     public static final String PREFIX_SORT = "sort/";
 
     public static final String MESSAGE_SUCCESS = "Listed all trips sorted by %s.\n%s";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all trips. "
+            + "Parameters: [" + PREFIX_SORT + "KEY]\n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_SORT + "name";
+
     public static final String MESSAGE_INVALID_SORT_KEY = "Invalid sort key! "
             + "Supported keys: name, start, end, len";
+
+    private static final long UNKNOWN_DURATION = -1;
 
     private final String sortKey;
 
@@ -48,35 +54,8 @@ public class ListCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        Comparator<Trip> comparator;
-        String sortDescription;
-
-        switch (sortKey) {
-        case "name":
-            comparator = Comparator.comparing(trip -> trip.getName().fullName.toLowerCase());
-            sortDescription = "name (alphabetical)";
-            break;
-        case "end":
-            comparator = Comparator.comparing(
-                    trip -> trip.getEndDate() == null ? null : trip.getEndDate().value,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-            sortDescription = "end date";
-            break;
-        case "len":
-            comparator = (t1, t2) -> Long.compare(calculateDuration(t2), calculateDuration(t1));
-            sortDescription = "duration (longest first)";
-            break;
-        case "start":
-            comparator = Comparator.comparing(
-                    trip -> trip.getStartDate() == null ? null : trip.getStartDate().value,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-            sortDescription = "start date";
-            break;
-        default:
-            throw new CommandException(MESSAGE_INVALID_SORT_KEY);
-        }
+        Comparator<Trip> comparator = getComparator(sortKey);
+        String sortDescription = getSortDescription(sortKey);
 
         model.updateFilteredTripList(PREDICATE_SHOW_ALL_TRIPS);
         model.updateSortedTripList(comparator);
@@ -87,9 +66,50 @@ public class ListCommand extends Command {
         return new CommandResult(String.format(MESSAGE_SUCCESS, sortDescription, summary));
     }
 
+    /**
+     * Returns the appropriate comparator based on the sort key.
+     */
+    private Comparator<Trip> getComparator(String key) throws CommandException {
+        switch (key) {
+        case "name":
+            return Comparator.comparing(trip -> trip.getName().fullName.toLowerCase());
+        case "end":
+            return Comparator.comparing(
+                    trip -> trip.getEndDate() == null ? null : trip.getEndDate().value,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        case "len":
+            return (t1, t2) -> Long.compare(calculateDuration(t2), calculateDuration(t1));
+        case "start":
+            return Comparator.comparing(
+                    trip -> trip.getStartDate() == null ? null : trip.getStartDate().value,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        default:
+            throw new CommandException(MESSAGE_INVALID_SORT_KEY);
+        }
+    }
+
+    /**
+     * Returns a human-readable description of the sort key.
+     */
+    private String getSortDescription(String key) {
+        switch (key) {
+        case "name":
+            return "name (alphabetical)";
+        case "end":
+            return "end date";
+        case "len":
+            return "duration (longest first)";
+        case "start":
+        default:
+            return "start date";
+        }
+    }
+
     private long calculateDuration(Trip trip) {
         if (trip.getStartDate() == null || trip.getEndDate() == null) {
-            return -1;
+            return UNKNOWN_DURATION;
         }
         return ChronoUnit.DAYS.between(trip.getStartDate().value, trip.getEndDate().value);
     }
