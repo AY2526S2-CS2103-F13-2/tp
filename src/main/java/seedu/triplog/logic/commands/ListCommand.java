@@ -75,29 +75,42 @@ public class ListCommand extends Command {
 
     /**
      * Returns the appropriate comparator based on the sort key.
-     * Uses alphabetical name sorting as a secondary tie-breaker.
      */
     private Comparator<Trip> getComparator(String key) throws CommandException {
-        Comparator<Trip> nameTieBreaker = Comparator.comparing(
-                trip -> trip.getName().fullName.toLowerCase());
-
         switch (key) {
         case "name":
-            return nameTieBreaker;
+            return getNameComparator();
         case "end":
-            return Comparator.comparing(Trip::getEndDateDisplay,
-                            Comparator.nullsLast(Comparator.naturalOrder()))
-                    .thenComparing(nameTieBreaker);
+            return getEndDateComparator();
         case "len":
-            Comparator<Trip> lenComparator = (t1, t2) -> Long.compare(calculateDuration(t2), calculateDuration(t1));
-            return lenComparator.thenComparing(nameTieBreaker);
+            return getDurationComparator();
         case "start":
-            return Comparator.comparing(Trip::getStartDateDisplay,
-                            Comparator.nullsLast(Comparator.naturalOrder()))
-                    .thenComparing(nameTieBreaker);
+            return getStartDateComparator();
         default:
             throw new CommandException(MESSAGE_INVALID_SORT_KEY);
         }
+    }
+
+    private Comparator<Trip> getNameComparator() {
+        return Comparator.comparing(Trip::getNameLowerCase);
+    }
+
+    private Comparator<Trip> getStartDateComparator() {
+        return Comparator.comparing(Trip::getStartDateDisplay,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(getNameComparator());
+    }
+
+    private Comparator<Trip> getEndDateComparator() {
+        return Comparator.comparing(Trip::getEndDateDisplay,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(getNameComparator());
+    }
+
+    private Comparator<Trip> getDurationComparator() {
+        Comparator<Trip> lenComparator = (t1, t2) -> Long.compare(calculateDuration(t2),
+                calculateDuration(t1));
+        return lenComparator.thenComparing(getNameComparator());
     }
 
     /**
