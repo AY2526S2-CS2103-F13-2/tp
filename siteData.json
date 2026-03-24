@@ -39,6 +39,7 @@
     },
     {
       "src": "DeveloperGuide.md",
+      "title": "Developer Guide",
       "headings": {
         "triplog-developer-guide": "TripLog Developer Guide",
         "acknowledgements": "Acknowledgements",
