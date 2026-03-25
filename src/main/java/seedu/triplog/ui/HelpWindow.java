@@ -60,6 +60,15 @@ public class HelpWindow extends UiPart<Stage> {
      */
     public HelpWindow(Stage root) {
         super(FXML, requireNonNullRoot(root));
+        assert prefixNote != null : "FXML field prefixNote not injected";
+        assert addUsage != null : "FXML field addUsage not injected";
+        assert editUsage != null : "FXML field editUsage not injected";
+        assert deleteUsage != null : "FXML field deleteUsage not injected";
+        assert tagUsage != null : "FXML field tagUsage not injected";
+        assert findUsage != null : "FXML field findUsage not injected";
+        assert filterUsage != null : "FXML field filterUsage not injected";
+        assert listUsage != null : "FXML field listUsage not injected";
+        assert exitNote != null : "FXML field exitNote not injected";
         logger.fine("Creating a new HelpWindow with provided root stage.");
         prefixNote.setText(PREFIX_NOTE);
         addUsage.setText(HelpCommand.ADD_USAGE);
