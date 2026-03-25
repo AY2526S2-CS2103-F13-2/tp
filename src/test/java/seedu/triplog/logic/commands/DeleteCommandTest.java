@@ -185,6 +185,28 @@ public class DeleteCommandTest {
     }
 
     @Test
+    public void buildPreviewMessage_singleTrip_usesSingularHeader() {
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_TRIP);
+        Trip trip = model.getFilteredTripList().get(0);
+
+        String message = deleteCommand.buildPreviewMessage(java.util.List.of(trip));
+
+        assertTrue(message.contains("Preview: 1 trip will be deleted."));
+    }
+
+    @Test
+    public void buildPreviewMessage_multipleTrips_usesPluralHeader() {
+        DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(1), Index.fromOneBased(2));
+        java.util.List<Trip> trips = java.util.List.of(
+                model.getFilteredTripList().get(0),
+                model.getFilteredTripList().get(1));
+
+        String message = deleteCommand.buildPreviewMessage(trips);
+
+        assertTrue(message.contains("Preview: 2 trips will be deleted."));
+    }
+
+    @Test
     public void equals() {
         DeleteCommand deleteFirstCommand = new DeleteCommand(INDEX_FIRST_TRIP);
         DeleteCommand deleteSecondCommand = new DeleteCommand(INDEX_SECOND_TRIP);
@@ -308,6 +330,39 @@ public class DeleteCommandTest {
         DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(2), Index.fromOneBased(2));
 
         Trip tripToDelete = expectedModel.getFilteredTripList().get(1);
+        expectedModel.deleteTrip(tripToDelete);
+
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_TRIP_SUCCESS, 1, expectedSummary);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_validSingleElementRange_returnsSingleDeleteMessage() {
+        Model model = new ModelManager(getTypicalTripLog(), new UserPrefs());
+        Model expectedModel = new ModelManager(getTypicalTripLog(), new UserPrefs());
+
+        DeleteCommand deleteCommand = new DeleteCommand(Index.fromOneBased(2), Index.fromOneBased(2));
+
+        Trip tripToDelete = expectedModel.getFilteredTripList().get(1);
+        expectedModel.deleteTrip(tripToDelete);
+
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_TRIP_SUCCESS, 1, expectedSummary);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_filterDeleteSingleMatch_returnsSingleDeleteMessage() {
+        Model model = new ModelManager(getTypicalTripLog(), new UserPrefs());
+        Model expectedModel = new ModelManager(getTypicalTripLog(), new UserPrefs());
+
+        Trip tripToDelete = expectedModel.getFilteredTripList().get(0);
+        DeleteCommand deleteCommand = new DeleteCommand(
+                trip -> trip.equals(model.getFilteredTripList().get(0)));
+
         expectedModel.deleteTrip(tripToDelete);
 
         String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
