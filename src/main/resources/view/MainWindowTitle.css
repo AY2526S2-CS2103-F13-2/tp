@@ -7,36 +7,31 @@
     -fx-padding: 5 0 5 10;             /* top, right, bottom, left */
 }
 
-/* Make MenuBar transparent so background image shows through */
-/* Rounded bubble behind File/Help menu */
-/* Left bubble (File) — prominent orange */
-/* Left bubble (File) — lighter orange */
-/* File bubble — snug padding */
+/* Left bubble (File) */
 .menu-bubble-left {
-    -fx-background-color: rgba(255,165,0,0.85);
+    -fx-background-color: rgba(255,165,0,0.85); /* Orange */
     -fx-background-radius: 20 0 0 20;
-    -fx-padding: 2 8 2 8; /* top/right/bottom/left padding inside the bubble */
+    -fx-padding: 0 5 0 5;
 }
 
-/* Help bubble — snug padding */
+/* Right bubble (Help) */
 .menu-bubble-right {
-    -fx-background-color: rgba(100,180,255,0.85);
+    -fx-background-color: rgba(100,180,255,0.85); /* Blue */
     -fx-background-radius: 0 20 20 0;
-    -fx-padding: 2 8 2 8;
+    -fx-padding: 0 5 0 5;
 }
 
-/* MenuBar inside bubbles */
-.menu-bubble-left MenuBar, .menu-bubble-right MenuBar {
+/* Make sure the menus inside don't have their own grey backgrounds */
+.menu-bubble-left .menu, .menu-bubble-right .menu {
     -fx-background-color: transparent;
-    -fx-padding: 0; /* no extra padding */
 }
 
-/* Menu text */
-.menu-bubble-left Menu, .menu-bubble-right Menu {
+.menu-bubble-left .menu .label, .menu-bubble-right .menu .label {
     -fx-text-fill: black;
-    -fx-font-weight: bolder;
+    -fx-font-weight: bold;
 }
-/* Make the MenuBar itself transparent so only the bubble shows */
-.menu-bar {
-    -fx-background-color: transparent;
+
+/* Optional: Hover effect for the whole bubble */
+.menu-bubble-left:hover, .menu-bubble-right:hover {
+    -fx-brightness: 1.1;
 }
