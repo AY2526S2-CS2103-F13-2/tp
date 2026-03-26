@@ -55,6 +55,7 @@
         "trip-creation-add-command": "Trip Creation: Add Command",
         "trip-deletion-delete-command": "Trip Deletion: Delete Command",
         "tagging-trips-tag-command": "Tagging Trips: Tag Command",
+        "filtering-trips-by-date-filter-command": "Filtering Trips by Date: Filter Command",
         "trip-statistics-and-multi-key-sorting": "Trip Statistics and Multi-Key Sorting",
         "help-command": "Help command",
         "proposed-undo-redo-feature": "[Proposed] Undo/redo feature",
