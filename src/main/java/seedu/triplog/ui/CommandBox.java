@@ -1,9 +1,10 @@
 package seedu.triplog.ui;
 
-import javafx.collections.ObservableList;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
+import javafx.util.Duration;
 import seedu.triplog.logic.commands.CommandResult;
 import seedu.triplog.logic.commands.exceptions.CommandException;
 import seedu.triplog.logic.parser.exceptions.ParseException;
@@ -13,10 +14,21 @@ import seedu.triplog.logic.parser.exceptions.ParseException;
  */
 public class CommandBox extends UiPart<Region> {
 
-    public static final String ERROR_STYLE_CLASS = "error";
     private static final String FXML = "CommandBox.fxml";
 
+    private static final String STYLE_SUCCESS_UNDERLINE = "-fx-border-color: transparent transparent "
+            + "#00ffcc transparent; "
+            + "-fx-border-width: 2; "
+            + "-fx-text-fill: #00ffcc;";
+
+    private static final String STYLE_ERROR_UNDERLINE = "-fx-border-color: transparent transparent "
+            + "#ff4d4d transparent; "
+            + "-fx-border-width: 2; "
+            + "-fx-text-fill: #ff4d4d;";
+
     private final CommandExecutor commandExecutor;
+    private boolean deletePendingConfirmation = false;
+    private String lastDeleteCommand = null;
 
     @FXML
     private TextField commandTextField;
@@ -27,8 +39,14 @@ public class CommandBox extends UiPart<Region> {
     public CommandBox(CommandExecutor commandExecutor) {
         super(FXML);
         this.commandExecutor = commandExecutor;
-        // calls #setStyleToDefault() whenever there is a change to the text of the command box.
-        commandTextField.textProperty().addListener((unused1, unused2, unused3) -> setStyleToDefault());
+        commandTextField.textProperty().addListener((unused1, oldValue, newValue) -> {
+            resetStyle();
+
+            if (!newValue.equals(lastDeleteCommand)) {
+                deletePendingConfirmation = false;
+                lastDeleteCommand = null;
+            }
+        });
     }
 
     /**
@@ -37,36 +55,83 @@ public class CommandBox extends UiPart<Region> {
     @FXML
     private void handleCommandEntered() {
         String commandText = commandTextField.getText();
-        if (commandText.equals("")) {
+        if (commandText.isEmpty()) {
             return;
         }
 
+        String trimmedCommandText = commandText.trim();
+        boolean isDeleteCommand = trimmedCommandText.equals("delete")
+                || trimmedCommandText.startsWith("delete ");
         try {
+            if (isDeleteCommand) {
+                // Second Enter on the exact same delete command -> confirm actual deletion
+                if (deletePendingConfirmation && commandText.equals(lastDeleteCommand)) {
+                    commandExecutor.execute(commandText);
+                    commandTextField.setText("");
+                    deletePendingConfirmation = false;
+                    lastDeleteCommand = null;
+                    applySuccessStyle();
+                    return;
+                }
+
+                // First Enter -> show preview only
+                String deleteArguments = commandText.substring("delete".length());
+                String previewCommandText = "deletepreview" + deleteArguments;
+
+                commandExecutor.execute(previewCommandText);
+
+                deletePendingConfirmation = true;
+                lastDeleteCommand = commandText;
+                applySuccessStyle();
+                return;
+            }
+
+            // All non-delete commands behave normally
             commandExecutor.execute(commandText);
             commandTextField.setText("");
+            applySuccessStyle();
+
         } catch (CommandException | ParseException e) {
-            setStyleToIndicateCommandFailure();
+            deletePendingConfirmation = false;
+            lastDeleteCommand = null;
+            applyErrorStyle();
+            applyShakeAnimation();
         }
     }
 
     /**
-     * Sets the command box style to use the default style.
+     * Resets the command box to the default state.
+     * Changed to black/dark text to be visible against the white background.
      */
-    private void setStyleToDefault() {
-        commandTextField.getStyleClass().remove(ERROR_STYLE_CLASS);
+    private void resetStyle() {
+        commandTextField.setStyle("-fx-text-fill: #1A1A1A;");
     }
 
     /**
-     * Sets the command box style to indicate a failed command.
+     * Applies a Neon Cyan underline and text color for success.
      */
-    private void setStyleToIndicateCommandFailure() {
-        ObservableList<String> styleClass = commandTextField.getStyleClass();
+    private void applySuccessStyle() {
+        commandTextField.setStyle(STYLE_SUCCESS_UNDERLINE);
+    }
 
-        if (styleClass.contains(ERROR_STYLE_CLASS)) {
-            return;
-        }
+    /**
+     * Applies a Bright Red underline, text color, and shakes for errors.
+     */
+    private void applyErrorStyle() {
+        commandTextField.setStyle(STYLE_ERROR_UNDERLINE);
+    }
 
-        styleClass.add(ERROR_STYLE_CLASS);
+    /**
+     * Applies a horizontal shake animation to provide haptic-style feedback on error.
+     */
+    private void applyShakeAnimation() {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(50), commandTextField);
+        tt.setFromX(0);
+        tt.setByX(8);
+        tt.setCycleCount(6);
+        tt.setAutoReverse(true);
+        tt.setOnFinished(event -> commandTextField.setTranslateX(0));
+        tt.play();
     }
 
     /**
@@ -76,10 +141,14 @@ public class CommandBox extends UiPart<Region> {
     public interface CommandExecutor {
         /**
          * Executes the command and returns the result.
-         *
-         * @see seedu.triplog.logic.Logic#execute(String)
          */
         CommandResult execute(String commandText) throws CommandException, ParseException;
     }
 
+    /**
+     * Requests focus on the command box.
+     */
+    public void requestFocus() {
+        commandTextField.requestFocus();
+    }
 }

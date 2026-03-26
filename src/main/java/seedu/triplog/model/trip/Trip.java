@@ -18,8 +18,7 @@ import seedu.triplog.model.tag.Tag;
  */
 public class Trip {
 
-    public static final String DATE_CONSTRAINTS =
-            "Start date cannot be after end date.";
+    public static final String MESSAGE_INVALID_DATE_ORDER = "Start date cannot be after end date.";
 
     /**
      * Comparison logic for trips:
@@ -29,7 +28,7 @@ public class Trip {
      */
     public static final Comparator<Trip> CHRONOLOGICAL_COMPARATOR = (trip1, trip2) -> {
         if (trip1.getStartDate() == null && trip2.getStartDate() == null) {
-            return trip1.getName().toString().compareToIgnoreCase(trip2.getName().toString());
+            return trip1.getNameLowerCase().compareTo(trip2.getNameLowerCase());
         }
         if (trip1.getStartDate() == null) {
             return 1;
@@ -40,7 +39,7 @@ public class Trip {
         int dateComparison = trip1.getStartDate().toString().compareTo(trip2.getStartDate().toString());
 
         if (dateComparison == 0) {
-            return trip1.getName().toString().compareToIgnoreCase(trip2.getName().toString());
+            return trip1.getNameLowerCase().compareTo(trip2.getNameLowerCase());
         }
 
         return dateComparison;
@@ -65,7 +64,7 @@ public class Trip {
         requireAllNonNull(name, tags);
 
         if (startDate != null && endDate != null) {
-            checkArgument(!startDate.value.isAfter(endDate.value), DATE_CONSTRAINTS);
+            checkArgument(!startDate.value.isAfter(endDate.value), MESSAGE_INVALID_DATE_ORDER);
         }
 
         this.name = name;
@@ -96,6 +95,14 @@ public class Trip {
         return name;
     }
 
+    /**
+     * Returns the full name in lower case.
+     * Used for case-insensitive sorting and satisfying Law of Demeter.
+     */
+    public String getNameLowerCase() {
+        return name.fullName.toLowerCase();
+    }
+
     public Phone getPhone() {
         return phone;
     }
@@ -122,6 +129,26 @@ public class Trip {
 
     public TripDate getEndDate() {
         return endDate;
+    }
+
+    public String getPhoneDisplay() {
+        return phone == null ? null : phone.value;
+    }
+
+    public String getEmailDisplay() {
+        return email == null ? null : email.value;
+    }
+
+    public String getAddressDisplay() {
+        return address == null ? null : address.value;
+    }
+
+    public String getStartDateDisplay() {
+        return startDate == null ? null : startDate.toString();
+    }
+
+    public String getEndDateDisplay() {
+        return endDate == null ? null : endDate.toString();
     }
 
     /**

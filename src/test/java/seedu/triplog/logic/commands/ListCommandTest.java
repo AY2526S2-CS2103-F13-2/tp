@@ -1,21 +1,25 @@
 package seedu.triplog.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.triplog.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.triplog.logic.commands.CommandTestUtil.showTripAtIndex;
 import static seedu.triplog.testutil.TypicalIndexes.INDEX_FIRST_TRIP;
 import static seedu.triplog.testutil.TypicalTrips.getTypicalTripLog;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seedu.triplog.logic.commands.exceptions.CommandException;
 import seedu.triplog.model.Model;
 import seedu.triplog.model.ModelManager;
+import seedu.triplog.model.TripLog;
 import seedu.triplog.model.UserPrefs;
 import seedu.triplog.model.trip.Trip;
+import seedu.triplog.testutil.TripBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
@@ -32,26 +36,190 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_listIsNotFiltered_showsSameList() {
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+    public void execute_listIsNotFiltered_showsSameListWithSummary() {
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "start date", expectedSummary);
+
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_listIsFiltered_showsEverything() {
+    public void execute_listIsFiltered_showsEverythingWithSummary() {
         showTripAtIndex(model, INDEX_FIRST_TRIP);
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "start date", expectedSummary);
+
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_listIsSorted_showsTripsInAscendingOrder() throws CommandException {
-        new ListCommand().execute(model);
+    public void execute_variedTripStatuses_summaryCorrect() {
+        TripLog tripLog = new TripLog();
+        LocalDate today = LocalDate.now();
+        Trip upcoming = new TripBuilder().withName("Upcoming")
+                .withStart(today.plusDays(7).toString())
+                .withEnd(today.plusDays(10).toString()).build();
 
-        List<Trip> sorted = model.getSortedTripList();
-        for (int i = 0; i < sorted.size() - 1; i++) {
-            assertTrue(
-                !sorted.get(i).getStartDate().value.isAfter(sorted.get(i + 1).getStartDate().value),
-                "Expected trips sorted by start date ascending"
-            );
-        }
+        Trip ongoing = new TripBuilder().withName("Ongoing")
+                .withStart(today.minusDays(1).toString())
+                .withEnd(today.plusDays(1).toString()).build();
+
+        Trip completed = new TripBuilder().withName("Completed")
+                .withStart(today.minusDays(10).toString())
+                .withEnd(today.minusDays(5).toString()).build();
+
+        Trip planning = new TripBuilder().withName("Planning").build();
+        Trip planningNull = new Trip(planning.getName(), planning.getPhone(),
+                planning.getEmail(), planning.getAddress(), planning.getTags(),
+                null, null);
+
+        tripLog.addTrip(upcoming);
+        tripLog.addTrip(ongoing);
+        tripLog.addTrip(completed);
+        tripLog.addTrip(planningNull);
+
+        Model model = new ModelManager(tripLog, new UserPrefs());
+        Model expectedModel = new ModelManager(tripLog, new UserPrefs());
+
+        String expectedSummary = "Summary: 1 Upcoming, 1 Ongoing, 1 Completed, 1 Planning";
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "start date", expectedSummary);
+
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_sortBySortName_success() {
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "name (alphabetical)", expectedSummary);
+        assertCommandSuccess(new ListCommand("name"), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_sortBySortLen_success() {
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                "duration (longest first)", expectedSummary);
+        assertCommandSuccess(new ListCommand("len"), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_sortBySortEnd_success() {
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "end date", expectedSummary);
+        assertCommandSuccess(new ListCommand("end"), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_invalidSortKey_throwsCommandException() {
+        assertCommandFailure(new ListCommand("price"), model, ListCommand.MESSAGE_INVALID_SORT_KEY);
+    }
+
+    @Test
+    public void execute_persistenceCheck_sortOrderMaintained() {
+        Comparator<Trip> nameComparator = Comparator.comparing(Trip::getNameLowerCase);
+        String nameDescription = "name (alphabetical)";
+
+        model.updateSortedTripList(nameComparator);
+        model.setLastSortDescription(nameDescription);
+
+        expectedModel.updateSortedTripList(nameComparator);
+        expectedModel.setLastSortDescription(nameDescription);
+
+        String expectedSummary = TripSummaryUtil.calculateSummary(model.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, nameDescription, expectedSummary);
+
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_sortTripsWithNullDates_success() {
+        TripLog tripLog = new TripLog();
+        // Use Builder to ensure consistency. Summary should be "1 Completed, 1 Planning" given Jan 2026 dates.
+        Trip tripWithDates = new TripBuilder().withName("A")
+                .withStart("2026-01-01").withEnd("2026-01-10").build();
+        Trip tripWithoutDates = new TripBuilder().withName("B")
+                .withStart(null).withEnd(null).build();
+
+        tripLog.addTrip(tripWithDates);
+        tripLog.addTrip(tripWithoutDates);
+
+        Model model = new ModelManager(tripLog, new UserPrefs());
+        Model expectedModel = new ModelManager(tripLog, new UserPrefs());
+
+        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
+
+        // Test Start Sort
+        String expectedMessageStart = String.format(ListCommand.MESSAGE_SUCCESS, "start date", expectedSummary);
+        expectedModel.setLastSortDescription("start date");
+        assertCommandSuccess(new ListCommand("start"), model, expectedMessageStart, expectedModel);
+
+        // Test End Sort
+        String expectedMessageEnd = String.format(ListCommand.MESSAGE_SUCCESS, "end date", expectedSummary);
+        expectedModel.setLastSortDescription("end date");
+        assertCommandSuccess(new ListCommand("end"), model, expectedMessageEnd, expectedModel);
+
+        // Test Duration Sort
+        String expectedMessageLen = String.format(ListCommand.MESSAGE_SUCCESS,
+                "duration (longest first)", expectedSummary);
+        expectedModel.setLastSortDescription("duration (longest first)");
+        assertCommandSuccess(new ListCommand("len"), model, expectedMessageLen, expectedModel);
+    }
+
+    @Test
+    public void execute_sortTieBreaker_alphabeticalFallBack() {
+        TripLog tripLog = new TripLog();
+        // Both start on the same day, A should come before Z.
+        Trip zebraTrip = new TripBuilder().withName("Zebra").withStart("2026-06-01")
+                .withEnd("2026-06-10").build();
+        Trip appleTrip = new TripBuilder().withName("Apple").withStart("2026-06-01")
+                .withEnd("2026-06-10").build();
+
+        tripLog.addTrip(zebraTrip);
+        tripLog.addTrip(appleTrip);
+
+        Model model = new ModelManager(tripLog, new UserPrefs());
+        Model expectedModel = new ModelManager(tripLog, new UserPrefs());
+
+        // Setup expected model sort manually to verify tie-breaker logic
+        Comparator<Trip> nameTieBreaker = Comparator.comparing(Trip::getNameLowerCase);
+        Comparator<Trip> startComparator = Comparator.comparing(Trip::getStartDateDisplay,
+                Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(nameTieBreaker);
+
+        expectedModel.updateSortedTripList(startComparator);
+
+        String summary = TripSummaryUtil.calculateSummary(tripLog.getTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "start date", summary);
+
+        assertCommandSuccess(new ListCommand("start"), model, expectedMessage, expectedModel);
+
+        // Final check: first element in model should be Apple
+        assertTrue(model.getFilteredTripList().get(0).getName().equals(appleTrip.getName()));
+    }
+
+    @Test
+    public void equals() {
+        ListCommand listNameCommand = new ListCommand("name");
+        ListCommand listStartCommand = new ListCommand("start");
+        ListCommand listDefaultCommand = new ListCommand();
+
+        // same object -> returns true
+        assertTrue(listNameCommand.equals(listNameCommand));
+
+        // same values -> returns true
+        ListCommand listNameCommandCopy = new ListCommand("name");
+        assertTrue(listNameCommand.equals(listNameCommandCopy));
+
+        // different types -> returns false
+        assertFalse(listNameCommand.equals(1));
+
+        // null -> returns false
+        assertFalse(listNameCommand.equals(null));
+
+        // different sortKey -> returns false
+        assertFalse(listNameCommand.equals(listStartCommand));
+
+        // null vs non-null sortKey -> returns false
+        assertFalse(listNameCommand.equals(listDefaultCommand));
     }
 }

@@ -1,7 +1,6 @@
 package seedu.triplog.ui;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -26,6 +25,10 @@ public class TripCard extends UiPart<Region> {
     @FXML
     private Label id;
     @FXML
+    private Label startDate;
+    @FXML
+    private Label endDate;
+    @FXML
     private Label phone;
     @FXML
     private Label address;
@@ -33,10 +36,17 @@ public class TripCard extends UiPart<Region> {
     private Label email;
     @FXML
     private FlowPane tags;
+
     @FXML
-    private Label startDate;
+    private HBox startDateBox;
     @FXML
-    private Label endDate;
+    private HBox endDateBox;
+    @FXML
+    private HBox phoneBox;
+    @FXML
+    private HBox addressBox;
+    @FXML
+    private HBox emailBox;
 
     /**
      * Creates a {@code TripCard} with the given {@code Trip} and index to display.
@@ -47,44 +57,38 @@ public class TripCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(trip.getName().fullName);
 
-        if (!Objects.isNull(trip.getPhone())) {
-            phone.setText(trip.getPhone().value);
-        } else {
-            phone.setText("");
-            phone.setManaged(false);
-        }
+        setOptionalLabel(phone, "Phone: ", trip.getPhoneDisplay(), phoneBox);
+        setOptionalLabel(address, "Address: ", trip.getAddressDisplay(), addressBox);
+        setOptionalLabel(email, "Email: ", trip.getEmailDisplay(), emailBox);
+        setOptionalLabel(startDate, "Start: ", trip.getStartDateDisplay(), startDateBox);
+        setOptionalLabel(endDate, "End: ", trip.getEndDateDisplay(), endDateBox);
+        setTags(trip);
+    }
 
-        if (!Objects.isNull(trip.getAddress())) {
-            address.setText(trip.getAddress().value);
+    /**
+     * Sets optional field label on the UI or hides it if value is null
+     */
+    private void setOptionalLabel(Label label, String prefix, String value, HBox box) {
+        if (value != null) {
+            label.setText(prefix + value);
         } else {
-            address.setText("");
-            address.setManaged(false);
+            box.setVisible(false);
+            box.setManaged(false);
         }
+    }
 
-        if (!Objects.isNull(trip.getEmail())) {
-            email.setText(trip.getEmail().value);
+    /**
+     * Sets tags on the UI given a trip
+     */
+    private void setTags(Trip trip) {
+        if (trip.getTags().isEmpty()) {
+            tags.setManaged(false);
+            tags.setVisible(false);
         } else {
-            email.setText("");
-            email.setManaged(false);
+            trip.getTags().stream()
+                    .sorted(Comparator.comparing(tag -> tag.tagName))
+                    .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
         }
-
-        if (!Objects.isNull(trip.getStartDate())) {
-            startDate.setText(trip.getStartDate().toString());
-        } else {
-            startDate.setText("");
-            startDate.setManaged(false);
-        }
-
-        if (!Objects.isNull(trip.getEndDate())) {
-            endDate.setText(trip.getEndDate().toString());
-        } else {
-            endDate.setText("");
-            endDate.setManaged(false);
-        }
-
-        trip.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }
 
     // getters mainly used for testing
@@ -106,6 +110,26 @@ public class TripCard extends UiPart<Region> {
 
     public Label getEndDateLabel() {
         return endDate;
+    }
+
+    public HBox getPhoneBox() {
+        return phoneBox;
+    }
+
+    public HBox getAddressBox() {
+        return addressBox;
+    }
+
+    public HBox getEmailBox() {
+        return emailBox;
+    }
+
+    public HBox getStartDateBox() {
+        return startDateBox;
+    }
+
+    public HBox getEndDateBox() {
+        return endDateBox;
     }
 
     public FlowPane getTags() {

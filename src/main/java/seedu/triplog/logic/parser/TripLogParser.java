@@ -18,6 +18,7 @@ import seedu.triplog.logic.commands.FilterCommand;
 import seedu.triplog.logic.commands.FindCommand;
 import seedu.triplog.logic.commands.HelpCommand;
 import seedu.triplog.logic.commands.ListCommand;
+import seedu.triplog.logic.commands.PreviewDeleteCommand;
 import seedu.triplog.logic.commands.TagCommand;
 import seedu.triplog.logic.parser.exceptions.ParseException;
 
@@ -64,6 +65,9 @@ public class TripLogParser {
         case DeleteCommand.COMMAND_WORD:
             return new DeleteCommandParser().parse(arguments);
 
+        case PreviewDeleteCommand.COMMAND_WORD:
+            return new PreviewDeleteCommand(arguments);
+
         case ClearCommand.COMMAND_WORD:
             return new ClearCommand();
 
@@ -74,13 +78,13 @@ public class TripLogParser {
             return new TagCommandParser().parse(arguments);
 
         case ListCommand.COMMAND_WORD:
-            return new ListCommand();
+            return new ListCommandParser().parse(arguments);
 
         case ExitCommand.COMMAND_WORD:
             return new ExitCommand();
 
         case HelpCommand.COMMAND_WORD:
-            return new HelpCommand();
+            return new HelpCommand(arguments);
 
         case FilterCommand.COMMAND_WORD:
             return new FilterCommandParser().parse(arguments);

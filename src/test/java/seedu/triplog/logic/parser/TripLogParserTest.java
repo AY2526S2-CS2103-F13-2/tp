@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.triplog.logic.commands.AddCommand;
 import seedu.triplog.logic.commands.ClearCommand;
+import seedu.triplog.logic.commands.Command;
 import seedu.triplog.logic.commands.DeleteCommand;
 import seedu.triplog.logic.commands.EditCommand;
 import seedu.triplog.logic.commands.EditCommand.EditTripDescriptor;
@@ -22,6 +23,7 @@ import seedu.triplog.logic.commands.ExitCommand;
 import seedu.triplog.logic.commands.FindCommand;
 import seedu.triplog.logic.commands.HelpCommand;
 import seedu.triplog.logic.commands.ListCommand;
+import seedu.triplog.logic.commands.PreviewDeleteCommand;
 import seedu.triplog.logic.parser.exceptions.ParseException;
 import seedu.triplog.model.trip.NameContainsKeywordsPredicate;
 import seedu.triplog.model.trip.Trip;
@@ -84,8 +86,9 @@ public class TripLogParserTest {
 
     @Test
     public void parseCommand_list() throws Exception {
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+        assertEquals(new ListCommand(), parser.parseCommand(ListCommand.COMMAND_WORD));
+        assertEquals(new ListCommand("name"), parser.parseCommand(ListCommand.COMMAND_WORD
+                + " sort/name"));
     }
 
     @Test
@@ -96,6 +99,15 @@ public class TripLogParserTest {
 
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
-        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, ()
+                -> parser.parseCommand("unknownCommand"));
+    }
+
+    @Test
+    public void parseCommand_deletePreview_returnsPreviewDeleteCommand() throws Exception {
+        TripLogParser parser = new TripLogParser();
+        Command command = parser.parseCommand("deletepreview 1");
+
+        assertTrue(command instanceof PreviewDeleteCommand);
     }
 }

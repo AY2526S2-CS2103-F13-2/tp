@@ -3,6 +3,12 @@ package seedu.triplog.ui;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.triplog.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.triplog.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
+import static seedu.triplog.logic.commands.CommandTestUtil.VALID_END_DATE_BOB;
+import static seedu.triplog.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static seedu.triplog.logic.commands.CommandTestUtil.VALID_START_DATE_BOB;
+import static seedu.triplog.testutil.TypicalTrips.BOB;
 
 import java.util.Collections;
 import java.util.Set;
@@ -17,9 +23,44 @@ import seedu.triplog.model.tag.Tag;
 import seedu.triplog.model.trip.Name;
 import seedu.triplog.model.trip.Trip;
 import seedu.triplog.model.trip.TripDate;
+import seedu.triplog.testutil.TripBuilder;
 
 @ExtendWith(ApplicationExtension.class)
 public class TripCardTest {
+    @Test
+    public void display_tripWithAllFields_showsAllFields() {
+        Trip validTrip = new TripBuilder(BOB)
+                .withAddress(VALID_ADDRESS_BOB)
+                .withPhone(VALID_PHONE_BOB)
+                .withEmail(VALID_EMAIL_BOB)
+                .withStart(VALID_START_DATE_BOB)
+                .withEnd(VALID_END_DATE_BOB)
+                .build();
+
+        TripCard tripCard = new TripCard(validTrip, 1);
+
+        // check that the text for optional fields are set
+        assertEquals("Phone: " + VALID_PHONE_BOB, tripCard.getPhoneLabel().getText());
+        assertEquals("Address: " + VALID_ADDRESS_BOB, tripCard.getAddressLabel().getText());
+        assertEquals("Email: " + VALID_EMAIL_BOB, tripCard.getEmailLabel().getText());
+        assertEquals("Start: " + VALID_START_DATE_BOB, tripCard.getStartDateLabel().getText());
+        assertEquals("End: " + VALID_END_DATE_BOB, tripCard.getEndDateLabel().getText());
+
+        // check that the nodes are managed
+        assertTrue(tripCard.getPhoneLabel().isManaged());
+        assertTrue(tripCard.getAddressLabel().isManaged());
+        assertTrue(tripCard.getEmailLabel().isManaged());
+        assertTrue(tripCard.getStartDateLabel().isManaged());
+        assertTrue(tripCard.getEndDateLabel().isManaged());
+
+        // check that the nodes are visible
+        assertTrue(tripCard.getPhoneLabel().isVisible());
+        assertTrue(tripCard.getAddressLabel().isVisible());
+        assertTrue(tripCard.getEmailLabel().isVisible());
+        assertTrue(tripCard.getStartDateLabel().isVisible());
+        assertTrue(tripCard.getEndDateLabel().isVisible());
+    }
+
     @Test
     public void tripCard_optionalFieldsNull_noExceptionsAndCorrectManaged() {
         Trip tripWithNulls = new Trip(
@@ -42,11 +83,18 @@ public class TripCardTest {
         assertEquals("", tripCard.getEndDateLabel().getText());
 
         // check that the nodes are unmanaged
-        assertFalse(tripCard.getPhoneLabel().isManaged());
-        assertFalse(tripCard.getAddressLabel().isManaged());
-        assertFalse(tripCard.getEmailLabel().isManaged());
-        assertFalse(tripCard.getStartDateLabel().isManaged());
-        assertFalse(tripCard.getEndDateLabel().isManaged());
+        assertFalse(tripCard.getPhoneBox().isManaged());
+        assertFalse(tripCard.getAddressBox().isManaged());
+        assertFalse(tripCard.getEmailBox().isManaged());
+        assertFalse(tripCard.getStartDateBox().isManaged());
+        assertFalse(tripCard.getEndDateBox().isManaged());
+
+        // check that the nodes are not visible
+        assertFalse(tripCard.getPhoneBox().isVisible());
+        assertFalse(tripCard.getAddressBox().isVisible());
+        assertFalse(tripCard.getEmailBox().isVisible());
+        assertFalse(tripCard.getStartDateBox().isVisible());
+        assertFalse(tripCard.getEndDateBox().isVisible());
     }
 
     @Test
@@ -72,6 +120,8 @@ public class TripCardTest {
 
         Set<String> expectedTagNames = tags.stream().map(tag -> tag.tagName).collect(Collectors.toSet());
         assertEquals(expectedTagNames, displayedTagNames);
+        assertTrue(tripCard.getTags().isVisible());
+        assertTrue(tripCard.getTags().isManaged());
 
         // test trip with no tags
         Trip tripNoTags = new Trip(
@@ -84,5 +134,7 @@ public class TripCardTest {
 
         TripCard tripCardNoTags = new TripCard(tripNoTags, 2);
         assertTrue(tripCardNoTags.getTags().getChildren().isEmpty());
+        assertFalse(tripCardNoTags.getTags().isVisible());
+        assertFalse(tripCardNoTags.getTags().isManaged());
     }
 }

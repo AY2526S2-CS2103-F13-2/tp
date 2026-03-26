@@ -1,7 +1,7 @@
 ---
   layout: default.md
-  title: "User Guide"
-  pageNav: 3
+    title: "User Guide"
+    pageNav: 3
 ---
 
 # TripLog User Guide
@@ -27,13 +27,11 @@ TripLog is a **desktop app for managing trips, optimized for use via a Command L
 
 1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
    Some example commands you can try:
-   - `list` : Lists all trips.
-   * `add n/Tokyo, Japan sd/2026-03-10 ed/2026-03-20` : Adds a trip to Tokyo.
-
-   * `delete 3` : Deletes the 3rd trip shown in the current list.
-
-   * `clear` : Deletes all entries.
-   - `exit` : Exits the app.
+    - `list` : Lists all trips and shows a status summary.
+    * `add n/Tokyo, Japan sd/2026-03-10 ed/2026-03-20` : Adds a trip to Tokyo.
+    * `delete 3` : Deletes the 3rd trip shown in the current list.
+    * `clear` : Deletes all entries.
+    - `exit` : Exits the app.
 
 1. Refer to the [Features](#features) below for details of each command.
 
@@ -60,18 +58,26 @@ TripLog is a **desktop app for managing trips, optimized for use via a Command L
 - Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE`, `p/PHONE n/NAME` is also acceptable.
 
-- Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.
+- For commands that do not take parameters (such as `help`, `exit` and `clear`), extraneous parameters will be ignored.
   </box>
 
 ### Viewing help : `help`
 
-Shows a help window explaining the command syntax and parameter requirements.
+Shows help for TripLog commands.
+
+Format: `help [COMMAND]`
+
+- Without arguments, `help` opens a help window showing syntax for all commands.
+- With a command name, `help COMMAND` displays the usage for that specific command inline in the result display (no window opens).
 
 ![help message](images/helpMessage.png)
 
-Format: `help`
+Examples:
+- `help` — opens the full help window.
+- `help add` — shows the usage for the `add` command inline.
+- `help delete` — shows the usage for the `delete` command inline.
 
-- The help window can be closed by clicking the 'x' button, or by pressing **Q** or **ESCAPE** while the window is focused.
+- The help window (opened by `help` with no arguments) can be closed by clicking the 'x' button, or by pressing **Q** or **ESCAPE** while the window is focused.
 
 ### Adding a trip: `add`
 
@@ -91,13 +97,31 @@ Examples:
 
 ### Listing all trips : `list`
 
-Shows a list of all trips sorted by start date in ascending order (earliest first). Trips with no start date are shown last.
+Shows a list of all trips currently in the log and displays a **Summary Dashboard** in the result box. The list can be optionally sorted by a specific key.
 
-Format: `list`
+The **Summary Dashboard** categorizes your trips based on the current date:
+* **Upcoming**: Trips starting after today.
+* **Ongoing**: Trips currently in progress (today is between start and end).
+* **Completed**: Trips that have already ended.
+* **Planning**: Trips with no start date specified.
 
-Example:
+Format: `list [sort/KEY]`
 
-- `list` — displays all trips ordered from earliest to latest start date
+- By default, trips are sorted by **start date** in ascending order (earliest first).
+- **Tie-breaker**: If multiple trips share the same date or length, they are automatically sorted alphabetically by name.
+- Trips with no start date are shown last.
+- The sort order is **persistent**: adding or editing trips will maintain the last chosen sort order.
+
+Supported `KEY` values:
+- `name`: Sorts alphabetically by destination name.
+- `start`: Sorts by start date (earliest first).
+- `end`: Sorts by end date (earliest first).
+- `len`: Sorts by duration of the trip (longest first).
+
+Examples:
+- `list` — Displays all trips ordered by start date and shows a summary (e.g. `Listed all trips sorted by start date. Summary: 1 Upcoming, 1 Ongoing, 5 Completed, 1 Planning`).
+- `list sort/name` — Displays all trips in alphabetical order.
+- `list sort/len` — Displays all trips starting with the longest durations.
 
 ### Editing a trip : `edit`
 
@@ -154,9 +178,19 @@ Examples:
 
 Deletes trip(s) from the currently displayed trip list.
 
-Format: `delete INDEX`  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`delete START-END`  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`delete PREFIX/VALUE`
+<box type="info" seamless>
+
+**Confirmation required:**
+All delete operations first show a **preview** of the trips to be deleted.
+Press **Enter again** to confirm the deletion, or edit the command to cancel.
+
+</box>
+
+Format:
+`delete INDEX`
+`delete START-END`
+`delete PREFIX/VALUE`
+`delete sd/START_DATE ed/END_DATE`
 
 - The command operates on the currently displayed trip list.
 
@@ -204,16 +238,30 @@ Examples:
 - `delete t/family` deletes all trips with the tag "family".
 - `delete sd/2026-03-01` deletes all trips with this start date.
 
+#### Delete by date range
+
+- Deletes all trips whose dates fall within the specified range.
+- Both `sd/START_DATE` and `ed/END_DATE` must be provided.
+- Dates must be in `YYYY-MM-DD` format.
+
+Examples:
+
+- `delete sd/2026-03-01 ed/2026-05-10` deletes all trips within this date range.
+
+#### Preview before deletion
+
+Before deleting, TripLog will display a preview of the trips that match the command.
+
 ### Filtering by date range : `filter`
 
 Filter trips by a given date range.
 
 Format: `filter sd/START_DATE ed/END_DATE`
 
-* Update the displayed list with trips satisfying this criteria: 
-START_DATE <= trip start date (required) <= trip end date (optional) <= END_DATE
+* Update the displayed list with trips satisfying this criteria:
+  START_DATE <= trip start date (required) <= trip end date (optional) <= END_DATE
 * START_DATE and END_DATE must be provided in YYYY-MM-DD format.
-* Ignores existing trip logs without starting date present 
+* Ignores existing trip logs without starting date present
 
 Examples:
 
@@ -270,10 +318,9 @@ _Details coming soon ..._
 
 | Action     | Format, Examples                                                                                                                                                         |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Add**    | `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 sd/2026-01-01 t/friend` |
-| **Clear**  | `clear`                                                                                                                                   |
-| **Delete** | `delete INDEX`<br> e.g., `delete 3`                                                                                                       |
-| **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com` |
-| **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tokyo Osaka`                                                                                                              |
-| **List**   | `list`                                                                                                                                                                   |
-| **Help**   | `help`                                                                                                                                                                   |
+| **Add** | `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 sd/2026-01-01 t/friend` |
+| **Clear** | `clear`                                                                                                                                   |
+| **Delete** | `delete INDEX`<br>`delete START-END`<br>`delete PREFIX/VALUE`<br>`delete sd/START_DATE ed/END_DATE`<br> e.g., `delete 3`, `delete 1-3`, `delete t/family`, `delete sd/2026-03-01 ed/2026-05-10` || **Edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com` |
+| **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tokyo Osaka`                                                                                                              |
+| **List** | `list [sort/KEY]` <br> e.g., `list sort/name`                                                                                                                            |                                                                                                                                                                 |
+| **Help** | `help [COMMAND]`<br> e.g., `help add`                                                                                                                                    |
