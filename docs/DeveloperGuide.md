@@ -120,6 +120,8 @@ How the parsing works:
 
 <puml src="diagrams/ModelClassDiagram.puml" width="450" />
 
+<puml src="diagrams/BetterModelClassDiagram.puml" width="450" alt="Better Model Class Diagram" />
+
 
 The `Model` component,
 
@@ -146,6 +148,30 @@ Classes used by multiple components are in the `seedu.triplog.commons` package.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Implementation**
+
+### Trip Creation: Add Command
+
+The following sequence diagram shows how the `add` command is parsed and executed:
+
+<puml src="diagrams/AddSequenceDiagram.puml" alt="Add Command Sequence Diagram" />
+
+### Trip Deletion: Delete Command
+
+The following sequence diagram shows the logic for deleting a trip:
+
+<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Delete Command Sequence Diagram" />
+
+### Tagging Trips: Tag Command
+
+The following sequence diagram illustrates the process of tagging a trip:
+
+<puml src="diagrams/TagSequenceDiagram.puml" alt="Tag Command Sequence Diagram" />
+
+### Filtering Trips by Date: Filter Command
+
+The following sequence diagram illustrates the process of filtering a trip:
+
+<puml src="diagrams/FilterSequenceDiagram.puml" alt="Filter Command Sequence Diagram" />
 
 ### Trip Statistics and Multi-Key Sorting
 
@@ -229,13 +255,25 @@ The proposed undo/redo mechanism is facilitated by `VersionedTripLog`. It extend
 
 These operations are exposed in the `Model` interface as `Model#commitTripLog()`, `Model#undoTripLog()` and `Model#redoTripLog()` respectively.
 
+The following sequence diagrams illustrate the logic behind undoing a command:
+
+<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="Undo Sequence Diagram Logic" />
+
+<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="Undo Sequence Diagram Model" />
+
 Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
 
 Step 1. The user launches the application for the first time. The `VersionedTripLog` will be initialized with the initial trip log state, and the `currentStatePointer` pointing to that single trip log state.
 
+<puml src="diagrams/UndoRedoState0.puml" alt="Undo Redo State 0" />
+
 Step 2. The user executes `delete 5` command to delete the 5th trip in the trip log. The `delete` command calls `Model#commitTripLog()`, causing the modified state of the trip log after the `delete 5` command executes to be saved in the `tripLogStateList`, and the `currentStatePointer` is shifted to the newly inserted trip log state.
 
+<puml src="diagrams/UndoRedoState1.puml" alt="Undo Redo State 1" />
+
 Step 3. The user executes `add n/David …​` to add a new trip. The `add` command also calls `Model#commitTripLog()`, causing another modified trip log state to be saved into the `tripLogStateList`.
+
+<puml src="diagrams/UndoRedoState2.puml" alt="Undo Redo State 2" />
 
 <box type="info" seamless>
 
@@ -244,6 +282,8 @@ Step 3. The user executes `add n/David …​` to add a new trip. The `add` comm
 </box>
 
 Step 4. The user now decides that adding the trip was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoTripLog()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous trip log state, and restores the trip log to that state.
+
+<puml src="diagrams/UndoRedoState3.puml" alt="Undo Redo State 3" />
 
 <box type="info" seamless>
 
@@ -254,15 +294,13 @@ than attempting to perform the undo.
 
 The `redo` command does the opposite — it calls `Model#redoTripLog()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the trip log to that state.
 
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index `tripLogStateList.size() - 1`, pointing to the latest trip log state, then there are no undone TripLog states to restore. The `redo` command uses `Model#canRedoTripLog()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</box>
-
 Step 5. The user then decides to execute the command `list`. Commands that do not modify the trip log, such as `list`, will usually not call `Model#commitTripLog()`, `Model#undoTripLog()` or `Model#redoTripLog()`. Thus, the `tripLogStateList` remains unchanged.
 
 Step 6. The user executes `clear`, which calls `Model#commitTripLog()`. Since the `currentStatePointer` is not pointing at the end of the `tripLogStateList`, all trip log states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
+
+<puml src="diagrams/UndoRedoState4.puml" alt="Undo Redo State 4" />
+
+<puml src="diagrams/CommitActivityDiagram.puml" alt="Commit Activity Diagram" />
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -409,4 +447,9 @@ testers are expected to do more *exploratory* testing.
 
 1. Dealing with missing/corrupted data files
 
-    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+    1. To simulate a missing file, simply delete the `triplog.json` file from the `data/` folder while the app is closed.
+    2. Expected: Upon re-launching, TripLog should initialize with a clean set of sample data.
+    3. To simulate a corrupted file, open `triplog.json` in a text editor and delete a necessary bracket or comma to break the JSON structure.
+    4. Expected: Upon re-launching, TripLog should detect the invalid format, discard the data, and start with an empty trip log.
+
+--------------------------------------------------------------------------------------------------------------------
