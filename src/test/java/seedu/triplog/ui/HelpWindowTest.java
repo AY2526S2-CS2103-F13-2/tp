@@ -4,16 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.framework.junit5.Stop;
-
-import seedu.triplog.commons.core.CommandUsage;
-
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+
+import seedu.triplog.commons.core.CommandUsage;
 
 @ExtendWith(ApplicationExtension.class)
 public class HelpWindowTest {
@@ -93,5 +93,4 @@ public class HelpWindowTest {
         assertTrue(CommandUsage.CLEAR_USAGE.contains("clear"));
         assertTrue(CommandUsage.EXIT_USAGE.contains("exit"));
     }
-
 }
