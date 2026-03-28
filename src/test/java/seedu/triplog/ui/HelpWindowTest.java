@@ -138,5 +138,7 @@ public class HelpWindowTest {
         assertTrue(CommandUsage.FIND_USAGE.contains("find"));
         assertTrue(CommandUsage.FILTER_USAGE.contains("filter"));
         assertTrue(CommandUsage.LIST_USAGE.contains("list"));
+        assertTrue(CommandUsage.CLEAR_USAGE.contains("clear"));
+        assertTrue(CommandUsage.EXIT_USAGE.contains("exit"));
     }
 }
