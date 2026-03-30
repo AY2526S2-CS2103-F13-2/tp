@@ -19,7 +19,10 @@ import seedu.triplog.model.tag.Tag;
  */
 public class Trip {
 
+    public static final int MAX_NAME_LENGTH = 85; // longest place name in the world is 85 letters
     public static final String MESSAGE_INVALID_DATE_ORDER = "Start date cannot be after end date.";
+    public static final String MESSAGE_INVALID_NAME_LENGTH = "Trip name must be at most "
+                                                              + MAX_NAME_LENGTH + " characters.";
 
     /**
      * Comparison logic for trips:
@@ -65,6 +68,9 @@ public class Trip {
     public Trip(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
                 TripDate startDate, TripDate endDate) {
         requireAllNonNull(name, tags);
+
+        checkArgument(name.toString().length() <= MAX_NAME_LENGTH,
+                MESSAGE_INVALID_NAME_LENGTH);
 
         if (startDate != null && endDate != null) {
             checkArgument(!startDate.value.isAfter(endDate.value), MESSAGE_INVALID_DATE_ORDER);

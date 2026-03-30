@@ -9,6 +9,7 @@ import static seedu.triplog.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.triplog.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.triplog.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.triplog.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.triplog.model.trip.Trip.MAX_NAME_LENGTH;
 import static seedu.triplog.testutil.Assert.assertThrows;
 import static seedu.triplog.testutil.TypicalTrips.ALICE;
 import static seedu.triplog.testutil.TypicalTrips.BOB;
@@ -184,6 +185,22 @@ public class TripTest {
         Name name = new Name("Test Trip");
 
         new Trip(name, null, null, null, Collections.emptySet(), null, null);
+    }
+
+    @Test
+    public void constructor_nameTooLong_throwsIllegalArgumentException() {
+        String longName = "A".repeat(MAX_NAME_LENGTH + 1);
+        assertThrows(IllegalArgumentException.class, () ->
+                new Trip(new Name(longName), null, null, null, Collections.emptySet(), null, null)
+        );
+    }
+
+    @Test
+    public void constructor_validTrip_success() {
+        TripDate start = new TripDate("2025-01-01");
+        TripDate end = new TripDate("2025-12-31");
+        Trip trip = new Trip(new Name("Valid Trip"), null, null, null, Collections.emptySet(), start, end);
+        assertEquals("Valid Trip", trip.getName().toString());
     }
 
     @Test
