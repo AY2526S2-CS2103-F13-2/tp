@@ -159,6 +159,21 @@
       "src": "team/mingjelly.md",
       "headings": {},
       "headingKeywords": {}
+    },
+    {
+      "src": "team/ths1959.md",
+      "headings": {
+        "toh-hong-shen-project-portfolio-for-triplog": "Toh Hong Shen - Project Portfolio for TripLog",
+        "project-overview": "Project Overview",
+        "summary-of-contributions": "Summary of Contributions",
+        "contributions-to-the-user-guide": "Contributions to the User Guide",
+        "listing-all-trips-list": "Listing all trips : list",
+        "contributions-to-the-developer-guide": "Contributions to the Developer Guide",
+        "trip-statistics-and-multi-key-sorting": "Trip Statistics and Multi-Key Sorting",
+        "contributions-to-team-tasks": "Contributions to Team Tasks",
+        "review-of-alpha-bugs-reported": "Review of Alpha Bugs Reported"
+      },
+      "headingKeywords": {}
     }
   ]
 }
