@@ -69,6 +69,7 @@
         "launch-and-shutdown": "Launch and shutdown",
         "command-word-case-insensitivity": "Command Word Case-Insensitivity",
         "listing-sorting-and-statistics": "Listing, Sorting, and Statistics",
+        "locating-trips-by-name": "Locating trips by name",
         "deleting-a-trip": "Deleting a trip",
         "saving-data": "Saving data"
       },
