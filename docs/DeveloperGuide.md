@@ -439,6 +439,17 @@ testers are expected to do more *exploratory* testing.
     1. Test case: Execute `list sort/name`, then `add n/B-Destination`.
        Expected: The new trip is added and automatically positioned in alphabetical order.
 
+### Locating trips by name
+
+1. Testing partial word matching
+    1. Prerequisites: App launched with sample data (e.g., "Tokyo Japan").
+    2. Test case: `find Tok`<br>
+       Expected: "Tokyo Japan" is found (partial match).
+    3. Test case: `find tokyo`<br>
+       Expected: "Tokyo Japan" is found (case-insensitive).
+    4. Test case: `find Tok Jap`<br>
+       Expected: "Tokyo Japan" is found (multiple partial keywords).
+
 ### Deleting a trip
 
 1. Deleting a trip while all trips are being shown

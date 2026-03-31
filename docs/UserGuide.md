@@ -160,20 +160,20 @@ Examples:
 
 ### Locating trips by name: `find`
 
-Finds trips whose names contain any of the given keywords.
+Finds trips whose names contain any of the given keywords as substrings.
 
 Format: `find KEYWORD [MORE_KEYWORDS]`
 
-- The search is case-insensitive. e.g `hans` will match `Hans`
-- The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
+- The search is case-insensitive. e.g. `tok` will match `Tokyo`
+- The order of the keywords does not matter. e.g. `Japan Tokyo` will match `Tokyo Japan`
 - Only the name is searched.
-- Only full words will be matched e.g. `Han` will not match `Hans`
+- **Partial words will be matched.** e.g. `Tok` will match `Tokyo`
 - Trips matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+  e.g. `Tok Osaka` will return `Tokyo Japan`, `Osaka`
 
 Examples:
 
-- `find John` returns `john` and `John Doe`
+- `find Tok` returns `Tokyo Japan`
 - `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
@@ -325,5 +325,6 @@ _Details coming soon ..._
 | **Clear** | `clear`                                                                                                                                   |
 | **Delete** | `delete INDEX`<br>`delete START-END`<br>`delete PREFIX/VALUE`<br>`delete sd/START_DATE ed/END_DATE`<br> e.g., `delete 3`, `delete 1-3`, `delete t/family`, `delete sd/2026-03-01 ed/2026-05-10` || **Edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com` |
 | **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tokyo Osaka`                                                                                                              |
+| **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tok Osaka`                                                                                                              |
 | **List** | `list [sort/KEY]` <br> e.g., `list sort/name`                                                                                                                            |                                                                                                                                                                 |
 | **Help** | `help [COMMAND]`<br> e.g., `help add`                                                                                                                                    |
