@@ -90,23 +90,36 @@ public class ListCommandTest {
 
     @Test
     public void execute_sortBySortName_success() {
+        String description = "name (alphabetical)";
+        expectedModel.setLastSortDescription(description);
+        expectedModel.updateSortedTripList(Comparator.comparing(Trip::getNameLowerCase));
+
         String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "name (alphabetical)", expectedSummary);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, description, expectedSummary);
         assertCommandSuccess(new ListCommand("name"), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_sortBySortLen_success() {
+        String description = "duration (longest first)";
+        expectedModel.setLastSortDescription(description);
+        expectedModel.updateSortedTripList((t1, t2) -> Long.compare(t2.getDurationInDays(),
+                t1.getDurationInDays()));
+
         String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
-                "duration (longest first)", expectedSummary);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, description, expectedSummary);
         assertCommandSuccess(new ListCommand("len"), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_sortBySortEnd_success() {
+        String description = "end date";
+        expectedModel.setLastSortDescription(description);
+        expectedModel.updateSortedTripList(Comparator.comparing(Trip::getEndDateDisplay,
+                Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Trip::getNameLowerCase));
+
         String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "end date", expectedSummary);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, description, expectedSummary);
         assertCommandSuccess(new ListCommand("end"), model, expectedMessage, expectedModel);
     }
 
@@ -135,7 +148,6 @@ public class ListCommandTest {
     @Test
     public void execute_sortTripsWithNullDates_success() {
         TripLog tripLog = new TripLog();
-        // Use Builder to ensure consistency. Summary should be "1 Completed, 1 Planning" given Jan 2026 dates.
         Trip tripWithDates = new TripBuilder().withName("A")
                 .withStart("2026-01-01").withEnd("2026-01-10").build();
         Trip tripWithoutDates = new TripBuilder().withName("B")
@@ -157,19 +169,22 @@ public class ListCommandTest {
         // Test End Sort
         String expectedMessageEnd = String.format(ListCommand.MESSAGE_SUCCESS, "end date", expectedSummary);
         expectedModel.setLastSortDescription("end date");
+        expectedModel.updateSortedTripList(Comparator.comparing(Trip::getEndDateDisplay,
+                Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Trip::getNameLowerCase));
         assertCommandSuccess(new ListCommand("end"), model, expectedMessageEnd, expectedModel);
 
         // Test Duration Sort
         String expectedMessageLen = String.format(ListCommand.MESSAGE_SUCCESS,
                 "duration (longest first)", expectedSummary);
         expectedModel.setLastSortDescription("duration (longest first)");
+        expectedModel.updateSortedTripList((t1, t2) -> Long.compare(t2.getDurationInDays(),
+                t1.getDurationInDays()));
         assertCommandSuccess(new ListCommand("len"), model, expectedMessageLen, expectedModel);
     }
 
     @Test
     public void execute_sortTieBreaker_alphabeticalFallBack() {
         TripLog tripLog = new TripLog();
-        // Both start on the same day, A should come before Z.
         Trip zebraTrip = new TripBuilder().withName("Zebra").withStart("2026-06-01")
                 .withEnd("2026-06-10").build();
         Trip appleTrip = new TripBuilder().withName("Apple").withStart("2026-06-01")
@@ -181,20 +196,19 @@ public class ListCommandTest {
         Model model = new ModelManager(tripLog, new UserPrefs());
         Model expectedModel = new ModelManager(tripLog, new UserPrefs());
 
-        // Setup expected model sort manually to verify tie-breaker logic
         Comparator<Trip> nameTieBreaker = Comparator.comparing(Trip::getNameLowerCase);
         Comparator<Trip> startComparator = Comparator.comparing(Trip::getStartDateDisplay,
                 Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(nameTieBreaker);
 
         expectedModel.updateSortedTripList(startComparator);
+        expectedModel.setLastSortDescription("start date");
 
         String summary = TripSummaryUtil.calculateSummary(tripLog.getTripList());
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "start date", summary);
 
         assertCommandSuccess(new ListCommand("start"), model, expectedMessage, expectedModel);
 
-        // Final check: first element in model should be Apple
-        assertTrue(model.getFilteredTripList().get(0).getName().equals(appleTrip.getName()));
+        assertTrue(model.getFilteredTripList().get(0).getName().fullName.equals(appleTrip.getName().fullName));
     }
 
     @Test

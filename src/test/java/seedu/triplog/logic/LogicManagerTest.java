@@ -113,6 +113,13 @@ public class LogicManagerTest {
         assertEquals(errorMessage, logicWithError.getInitialDataLoadError());
     }
 
+    @Test
+    public void getSummary_initialState_returnsCorrectSummary() {
+        String expectedSummary = TripSummaryUtil.calculateSummary(model.getFilteredTripList());
+        String expectedMessage = String.format("Listed all trips sorted by %s.\n%s", "start date", expectedSummary);
+        assertEquals(expectedMessage, logic.getSummary());
+    }
+
     private void assertCommandSuccess(String inputCommand, String expectedMessage,
                                       Model expectedModel) throws CommandException, ParseException {
         CommandResult result = logic.execute(inputCommand);
