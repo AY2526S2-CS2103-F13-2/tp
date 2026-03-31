@@ -2,6 +2,7 @@ package seedu.triplog.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.triplog.logic.Messages.MESSAGE_INVALID_TRIP_DISPLAYED_INDEX;
 import static seedu.triplog.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.triplog.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
@@ -37,6 +38,9 @@ import seedu.triplog.storage.JsonUserPrefsStorage;
 import seedu.triplog.storage.StorageManager;
 import seedu.triplog.testutil.TripBuilder;
 
+/**
+ * Contains unit tests for LogicManager.
+ */
 public class LogicManagerTest {
     private static final IOException DUMMY_IO_EXCEPTION = new IOException("dummy IO exception");
     private static final IOException DUMMY_AD_EXCEPTION = new AccessDeniedException("dummy access denied exception");
@@ -74,8 +78,8 @@ public class LogicManagerTest {
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
         String expectedSummary = TripSummaryUtil.calculateSummary(model.getFilteredTripList());
-        // Updated to expect the default "start date" initialized in ModelManager
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, "start date", expectedSummary);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, ListCommand.SORT_DESC_START,
+                expectedSummary);
         assertCommandSuccess(listCommand, expectedMessage, model);
     }
 
@@ -111,6 +115,31 @@ public class LogicManagerTest {
         String errorMessage = "Test Error Message";
         Logic logicWithError = new LogicManager(model, storage, errorMessage);
         assertEquals(errorMessage, logicWithError.getInitialDataLoadError());
+    }
+
+    @Test
+    public void getSummary_initialState_returnsCorrectSummary() {
+        String expectedSummary = TripSummaryUtil.calculateSummary(model.getFilteredTripList());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, ListCommand.SORT_DESC_START,
+                expectedSummary);
+        assertEquals(expectedMessage, logic.getSummary());
+    }
+
+    @Test
+    public void getSummary_nullSortDescription_defaultsToStartDate() {
+        // Use a Model stub to force a null return value for the sort description
+        Model modelStub = new ModelManager() {
+            @Override
+            public String getLastSortDescription() {
+                return null;
+            }
+        };
+
+        Logic logicWithNullSort = new LogicManager(modelStub, storage);
+        String summary = logicWithNullSort.getSummary();
+
+        // Verifies fallback to constant start date description
+        assertTrue(summary.contains("sorted by " + ListCommand.SORT_DESC_START));
     }
 
     private void assertCommandSuccess(String inputCommand, String expectedMessage,

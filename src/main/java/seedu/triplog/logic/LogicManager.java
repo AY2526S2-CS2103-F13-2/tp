@@ -10,6 +10,8 @@ import seedu.triplog.commons.core.GuiSettings;
 import seedu.triplog.commons.core.LogsCenter;
 import seedu.triplog.logic.commands.Command;
 import seedu.triplog.logic.commands.CommandResult;
+import seedu.triplog.logic.commands.ListCommand;
+import seedu.triplog.logic.commands.TripSummaryUtil;
 import seedu.triplog.logic.commands.exceptions.CommandException;
 import seedu.triplog.logic.parser.TripLogParser;
 import seedu.triplog.logic.parser.exceptions.ParseException;
@@ -102,5 +104,17 @@ public class LogicManager implements Logic {
     @Override
     public String getInitialDataLoadError() {
         return initialDataLoadError;
+    }
+
+    @Override
+    public String getSummary() {
+        String summary = TripSummaryUtil.calculateSummary(model.getFilteredTripList());
+        String sortDescription = model.getLastSortDescription();
+
+        if (sortDescription == null) {
+            sortDescription = ListCommand.SORT_DESC_START;
+        }
+
+        return String.format(ListCommand.MESSAGE_SUCCESS, sortDescription, summary);
     }
 }

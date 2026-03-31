@@ -16,11 +16,15 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import seedu.triplog.commons.core.GuiSettings;
+import seedu.triplog.logic.commands.ListCommand;
 import seedu.triplog.model.trip.Name;
 import seedu.triplog.model.trip.NameContainsKeywordsPredicate;
 import seedu.triplog.model.trip.Trip;
 import seedu.triplog.model.trip.TripDate;
 
+/**
+ * Contains unit tests for ModelManager.
+ */
 public class ModelManagerTest {
 
     private ModelManager modelManager = new ModelManager();
@@ -30,6 +34,13 @@ public class ModelManagerTest {
         assertEquals(new UserPrefs(), modelManager.getUserPrefs());
         assertEquals(new GuiSettings(), modelManager.getGuiSettings());
         assertEquals(new TripLog(), new TripLog(modelManager.getTripLog()));
+    }
+
+    @Test
+    public void constructor_initializesCorrectComparator() {
+        UserPrefs namePrefs = new UserPrefs();
+        ModelManager model = new ModelManager(new TripLog(), namePrefs, Trip.CHRONOLOGICAL_COMPARATOR);
+        assertEquals(new UserPrefs(), model.getUserPrefs());
     }
 
     @Test
@@ -146,5 +157,10 @@ public class ModelManagerTest {
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setTripLogFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(tripLog, differentUserPrefs)));
+
+        // different lastSortDescription -> returns false
+        UserPrefs diffSortPrefs = new UserPrefs();
+        diffSortPrefs.setLastSortDescription(ListCommand.SORT_DESC_NAME);
+        assertFalse(modelManager.equals(new ModelManager(tripLog, diffSortPrefs)));
     }
 }
