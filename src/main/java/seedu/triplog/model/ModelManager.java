@@ -27,10 +27,10 @@ public class ModelManager implements Model {
     private final SortedList<Trip> sortedTrips;
 
     /**
-     * Initializes a ModelManager with the given tripLog and userPrefs.
+     * Initializes a ModelManager with the given tripLog, userPrefs and initial comparator.
      */
-    public ModelManager(ReadOnlyTripLog tripLog, ReadOnlyUserPrefs userPrefs) {
-        requireAllNonNull(tripLog, userPrefs);
+    public ModelManager(ReadOnlyTripLog tripLog, ReadOnlyUserPrefs userPrefs, Comparator<Trip> initialComparator) {
+        requireAllNonNull(tripLog, userPrefs, initialComparator);
 
         logger.fine("Initializing with trip log: " + tripLog + " and user prefs " + userPrefs);
 
@@ -39,11 +39,18 @@ public class ModelManager implements Model {
         filteredTrips = new FilteredList<>(this.tripLog.getTripList());
         sortedTrips = new SortedList<>(filteredTrips);
 
-        setInitialComparator(this.userPrefs.getLastSortDescription());
+        sortedTrips.setComparator(initialComparator);
+    }
+
+    /**
+     * Legacy constructor for backward compatibility in tests.
+     */
+    public ModelManager(ReadOnlyTripLog tripLog, ReadOnlyUserPrefs userPrefs) {
+        this(tripLog, userPrefs, Trip.CHRONOLOGICAL_COMPARATOR);
     }
 
     public ModelManager() {
-        this(new TripLog(), new UserPrefs());
+        this(new TripLog(), new UserPrefs(), Trip.CHRONOLOGICAL_COMPARATOR);
     }
 
     //=========== UserPrefs ==================================================================================
@@ -153,35 +160,6 @@ public class ModelManager implements Model {
     public void setLastSortDescription(String description) {
         requireNonNull(description);
         userPrefs.setLastSortDescription(description);
-    }
-
-    /**
-     * Sets the sorted list comparator based on the persisted description string.
-     */
-    private void setInitialComparator(String description) {
-        if (description == null) {
-            sortedTrips.setComparator(Trip.CHRONOLOGICAL_COMPARATOR);
-            return;
-        }
-
-        switch (description) {
-        case "name (alphabetical)":
-            sortedTrips.setComparator(Comparator.comparing(Trip::getNameLowerCase));
-            break;
-        case "end date":
-            sortedTrips.setComparator(Comparator.comparing(Trip::getEndDateDisplay,
-                            Comparator.nullsLast(Comparator.naturalOrder()))
-                    .thenComparing(Trip::getNameLowerCase));
-            break;
-        case "duration (longest first)":
-            sortedTrips.setComparator((t1, t2) -> Long.compare(t2.getDurationInDays(),
-                    t1.getDurationInDays()));
-            break;
-        case "start date":
-        default:
-            sortedTrips.setComparator(Trip.CHRONOLOGICAL_COMPARATOR);
-            break;
-        }
     }
 
     @Override
