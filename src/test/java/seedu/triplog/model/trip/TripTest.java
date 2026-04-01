@@ -45,9 +45,9 @@ public class TripTest {
         editedAlice = new TripBuilder(ALICE).withName(VALID_NAME_BOB).build();
         assertFalse(ALICE.isSameTrip(editedAlice));
 
-        // name differs in case, all other attributes same -> returns false
+        // name differs only in case, all other attributes same -> returns true
         Trip editedBob = new TripBuilder(BOB).withName(VALID_NAME_BOB.toLowerCase()).build();
-        assertFalse(BOB.isSameTrip(editedBob));
+        assertTrue(BOB.isSameTrip(editedBob));
 
         // name has trailing spaces, all other attributes same -> returns false
         String nameWithTrailingSpaces = VALID_NAME_BOB + " ";
