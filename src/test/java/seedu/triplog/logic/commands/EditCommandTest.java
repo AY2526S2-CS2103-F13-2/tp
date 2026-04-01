@@ -79,16 +79,16 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_noFieldSpecifiedUnfilteredList_success() {
-        EditCommand editCommand = new EditCommand(INDEX_FIRST_TRIP, new EditTripDescriptor());
-        Trip editedTrip = model.getFilteredTripList().get(INDEX_FIRST_TRIP.getZeroBased());
+    public void execute_sameFieldValueUnfilteredList_failure() {
+        Trip tripToEdit = model.getFilteredTripList().get(INDEX_FIRST_TRIP.getZeroBased());
 
-        Model expectedModel = new ModelManager(new TripLog(model.getTripLog()), new UserPrefs());
+        EditTripDescriptor descriptor = new EditTripDescriptorBuilder()
+                .withStart(tripToEdit.getStartDate().value.toString())
+                .build();
 
-        String expectedSummary = TripSummaryUtil.calculateSummary(expectedModel.getFilteredTripList());
-        String expectedMessage = String.format(MESSAGE_EDIT_TRIP_SUCCESS, Messages.format(editedTrip), expectedSummary);
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_TRIP, descriptor);
 
-        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_NO_CHANGES);
     }
 
     @Test
