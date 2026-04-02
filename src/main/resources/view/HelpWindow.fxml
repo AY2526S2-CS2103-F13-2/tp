@@ -55,7 +55,7 @@
             <Label fx:id="clearUsage"  wrapText="true" />
             <Separator />
             <Label fx:id="exitUsage"   wrapText="true" />
-
+            <Separator />
             <Label fx:id="exitNote" wrapText="true" style="-fx-font-style: italic;" />
           </VBox>
         </content>
