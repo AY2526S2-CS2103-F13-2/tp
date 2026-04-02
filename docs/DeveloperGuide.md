@@ -258,67 +258,6 @@ The `TripLogParser` routes `help` to `HelpCommand`:
 
 --------------------------------------------------------------------------------------------------------------------
 
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedTripLog`. It extends `TripLog` with an undo/redo history, stored internally as an `tripLogStateList` and `currentStatePointer`. Additionally, it implements the following operations:
-
-* `VersionedTripLog#commit()` — Saves the current trip log state in its history.
-* `VersionedTripLog#undo()` — Restores the previous trip log state from its history.
-* `VersionedTripLog#redo()` — Restores a previously undone trip log state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitTripLog()`, `Model#undoTripLog()` and `Model#redoTripLog()` respectively.
-
-The following sequence diagrams illustrate the logic behind undoing a command:
-
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="Undo Sequence Diagram Logic" />
-
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="Undo Sequence Diagram Model" />
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedTripLog` will be initialized with the initial trip log state, and the `currentStatePointer` pointing to that single trip log state.
-
-<puml src="diagrams/UndoRedoState0.puml" alt="Undo Redo State 0" />
-
-Step 2. The user executes `delete 5` command to delete the 5th trip in the trip log. The `delete` command calls `Model#commitTripLog()`, causing the modified state of the trip log after the `delete 5` command executes to be saved in the `tripLogStateList`, and the `currentStatePointer` is shifted to the newly inserted trip log state.
-
-<puml src="diagrams/UndoRedoState1.puml" alt="Undo Redo State 1" />
-
-Step 3. The user executes `add n/David …​` to add a new trip. The `add` command also calls `Model#commitTripLog()`, causing another modified trip log state to be saved into the `tripLogStateList`.
-
-<puml src="diagrams/UndoRedoState2.puml" alt="Undo Redo State 2" />
-
-<box type="info" seamless>
-
-**Note:** If a command fails its execution, it will not call `Model#commitTripLog()`, so the trip log state will not be saved into the `tripLogStateList`.
-
-</box>
-
-Step 4. The user now decides that adding the trip was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoTripLog()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous trip log state, and restores the trip log to that state.
-
-<puml src="diagrams/UndoRedoState3.puml" alt="Undo Redo State 3" />
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial TripLog state, then there are no previous TripLog states to restore. The `undo` command uses `Model#canUndoTripLog()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</box>
-
-The `redo` command does the opposite — it calls `Model#redoTripLog()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the trip log to that state.
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the trip log, such as `list`, will usually not call `Model#commitTripLog()`, `Model#undoTripLog()` or `Model#redoTripLog()`. Thus, the `tripLogStateList` remains unchanged.
-
-Step 6. The user executes `clear`, which calls `Model#commitTripLog()`. Since the `currentStatePointer` is not pointing at the end of the `tripLogStateList`, all trip log states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
-
-<puml src="diagrams/UndoRedoState4.puml" alt="Undo Redo State 4" />
-
-<puml src="diagrams/CommitActivityDiagram.puml" alt="Commit Activity Diagram" />
-
---------------------------------------------------------------------------------------------------------------------
-
 ## **Documentation, logging, testing, configuration, dev-ops**
 
 * [Documentation guide](Documentation.md)
@@ -393,6 +332,30 @@ Priorities: Essential (must have) MVP, High (expected to have) - `* * *`, Medium
 - **Experience Log**: Descriptive note added to a trip to record activities or reminders
 - **Category Tag**: Label for grouping trips by purpose (e.g work) or region (e.g Japan)
 - **Duration**: The total days between the start and end date of a trip.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Effort**
+
+While TripLog originated from AB3, the transition to a travel-specific manager required significant architectural changes:
+
+* **Temporal Logic Implementation**: Unlike static contact data, `Trip` objects are time-dependent. We implemented logic to handle overlapping dates for duplicate detection and created `TripSummaryUtil` to recalculate trip statuses relative to the system clock (`LocalDate.now()`).
+* **Complex Command Parsing**: The `delete` command was overhauled to support four distinct modes (Index, Range, Field-Match, and Date-Range). This required a sophisticated `DeleteCommandParser` and custom state-management logic in the UI for the "two-step confirmation" process without modifying the core `Logic` interface.
+* **State Persistence**: We expanded `UserPrefs` to include the last-used `sort order`. This required coordination between `Logic` and `Storage` to ensure the app launches exactly as the user left it.
+* **Enhanced UI Feedback**: We integrated dynamic icons and success/error styling in the `ResultDisplay` and `CommandBox`, moving away from AB3's purely text-based feedback.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned Enhancements**
+
+**Team size: 6**
+
+1. **Improve Error Message for Invalid Indices**: Currently, when an index is out of bounds or not a positive integer, the app shows a generic error. We plan to specify the valid range based on the current list size (e.g., "Index must be between 1 and 5").
+2. **Support for Non-English Characters**: We plan to allow Unicode characters in the destination `NAME` field to support international travel records (e.g., Tokyo / 東京).
+3. **Multi-Field Substring Search**: The `find` command currently only searches the Name field. We plan to expand substring matching to include Address and Tags fields simultaneously.
+4. **Refine Phone and Email Validation**: Currently, the validation for phone numbers and emails follows a strict alphanumeric format. We plan to allow more flexible symbols (e.g., "+" for country codes in phone numbers) to support international contact details.
+5. **Clearer Duplicate Detection Feedback**: When a duplicate trip is rejected, we plan to specify which existing entry it overlaps with (e.g., "Overlaps with trip at index 2") in the feedback box.5. **Clearer Duplicate Detection Feedback**: When a duplicate trip is rejected, we plan to specify which existing entry it overlaps with (e.g., "Overlaps with trip at index 2") in the feedback box.
+6. **Custom Icons Toggle**: Provide a setting in `preferences.json` to allow users to toggle off the custom `[OK]` and `[!!]` icons for a minimalist UI.
 
 --------------------------------------------------------------------------------------------------------------------
 
