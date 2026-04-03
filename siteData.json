@@ -70,7 +70,6 @@
         "launch-and-shutdown": "Launch and shutdown",
         "command-word-case-insensitivity": "Command Word Case-Insensitivity",
         "listing-sorting-and-statistics": "Listing, Sorting, and Statistics",
-        "ui-interaction-vertical-resizing": "UI Interaction: Vertical Resizing",
         "locating-trips-by-name": "Locating trips by name",
         "deleting-a-trip": "Deleting a trip",
         "saving-data": "Saving data"
@@ -120,7 +119,6 @@
         "triplog-user-guide": "TripLog User Guide",
         "quick-start": "Quick start",
         "features": "Features",
-        "ui-interaction-resizing-the-result-display": "UI Interaction: Resizing the Result Display",
         "viewing-help-help": "Viewing help : help",
         "adding-a-trip-add": "Adding a trip: add",
         "listing-all-trips-list": "Listing all trips : list",
