@@ -361,7 +361,7 @@ While TripLog originated from AB3, the transition to a travel-specific manager r
 2. **Support for Non-English Characters**: We plan to allow Unicode characters in the destination `NAME` field to support international travel records (e.g., Tokyo / 東京).
 3. **Multi-Field Substring Search**: The `find` command currently only searches the Name field. We plan to expand substring matching to include Address and Tags fields simultaneously.
 4. **Refine Phone and Email Validation**: Currently, the validation for phone numbers and emails follows a strict alphanumeric format. We plan to allow more flexible symbols (e.g., "+" for country codes in phone numbers) to support international contact details.
-5. **Clearer Duplicate Detection Feedback**: When a duplicate trip is rejected, we plan to specify which existing entry it overlaps with (e.g., "Overlaps with trip at index 2") in the feedback box.5. **Clearer Duplicate Detection Feedback**: When a duplicate trip is rejected, we plan to specify which existing entry it overlaps with (e.g., "Overlaps with trip at index 2") in the feedback box.
+5. **Clearer Duplicate Detection Feedback**: When a duplicate trip is rejected, we plan to specify which existing entry it overlaps with (e.g., "Overlaps with trip at index 2") in the feedback box.
 6. **Custom Icons Toggle**: Provide a setting in `preferences.json` to allow users to toggle off the custom `[OK]` and `[!!]` icons for a minimalist UI.
 
 --------------------------------------------------------------------------------------------------------------------
@@ -405,10 +405,10 @@ testers are expected to do more *exploratory* testing.
 
 ### Listing, Sorting, and Statistics
 
-1. Initial setup (Assume Today is 2026-03-24)
+1. Initial setup (Assume Today is 2026-04-02)
     1. Add a variety of trips:
         - Past: `add n/History sd/2020-01-01 ed/2020-01-05`
-        - Ongoing: `add n/Current Trip sd/2026-03-20 ed/2026-03-30`
+        - Ongoing: `add n/Current Trip sd/2026-04-01 ed/2026-04-10`
         - Future: `add n/Future Trip sd/2026-12-01 ed/2026-12-10`
         - Planning: `add n/Bucket List Ideas`
 
@@ -430,17 +430,6 @@ testers are expected to do more *exploratory* testing.
        Expected: The Result Display immediately shows a summary dashboard and the last used sort order without entering any commands.
     3. Test case: Sort the list using `list sort/name`, exit the application, and re-launch.
        Expected: The summary dashboard and the list itself remain sorted by name alphabetically.
-
-### UI Interaction: Vertical Resizing
-
-1. Testing Result Display resizing
-    1. Prerequisites: App launched with sample data.
-    2. Test case: Hover mouse over the boundary between Result Display and Trip List.
-       Expected: Cursor changes to vertical resize icon.
-    3. Test case: Click and drag upward.
-       Expected: Result Display height increases; Trip List height decreases.
-    4. Test case: Click and drag downward as far as possible.
-       Expected: Result Display height decreases but stops at a minimum height of 100px.
 
 ### Locating trips by name
 
@@ -488,7 +477,7 @@ testers are expected to do more *exploratory* testing.
 
 6. Deleting by date range
 
-    1. Test case: `delete sd/2026-01-01 ed/2026-12-31`  
+    1. Test case: `delete sd/2026-03-01 ed/2026-05-10`  
        Expected: Trips matching the specified date range are previewed, then deleted after confirmation.
 
 ### Saving data

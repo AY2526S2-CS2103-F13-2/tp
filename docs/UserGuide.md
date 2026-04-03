@@ -8,6 +8,8 @@ pageNav: 3
 
 TripLog is a **desktop app for managing trips, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, TripLog can get your travel management tasks done faster than traditional GUI apps.
 
+![UI Overview](images/Ui.png)
+
 <page-nav-print />
 
 ---
@@ -62,11 +64,6 @@ TripLog is a **desktop app for managing trips, optimized for use via a Command L
 
 - For commands that do not take parameters (such as `exit` and `clear`), extraneous parameters will be ignored.
   </box>
-
-### UI Interaction: Resizing the Result Display
-
-The **Result Display** (the box where command feedback is shown) is vertically resizable to help you view longer messages, such as help instructions or deletion previews.
-* **To resize**: Hover your mouse over the boundary between the Result Display and the trip list until the cursor changes to a resize icon. Click and drag up or down to adjust the height.
 
 ### Viewing help : `help`
 
@@ -176,8 +173,8 @@ Format: `tag INDEX TAG`
 
 * Tags the trip with the keyword `TAG` at the specified `INDEX`. The index refers to the index number shown in the displayed trip list. The index **must be a positive integer** 1, 2, 3, …​
 * Tags must be alphanumeric (A-Z, 0-9).
-* Duplicate tags will not be added. 
-* Duplicate tags are case-insensitive. e.g. `Hotel` and `HOTEL` are considered duplicates
+* Duplicate tags will not be added.
+* Duplicate tags are case-insensitive. e.g. `Hotel` and `HOTEL` are considered duplicates.
 
 Examples:
 * `tag 1 scenic beauty` Tags the 1st trip with `scenic beauty`.
@@ -354,6 +351,5 @@ _Details coming soon ..._
 | **Clear** | `clear`                                                                                                                                   |
 | **Delete** | `delete INDEX`<br>`delete START-END`<br>`delete PREFIX/VALUE`<br>`delete sd/START_DATE ed/END_DATE`<br> e.g., `delete 3`, `delete 1-3`, `delete t/family`, `delete sd/2026-03-01 ed/2026-05-10` || **Edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [sd/DATE] [ed/DATE] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com` |
 | **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tokyo Osaka`                                                                                                              |
-| **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find Tok Osaka`                                                                                                              |
 | **List** | `list [sort/KEY]` <br> e.g., `list sort/name`                                                                                                                            |                                                                                                                                                                 |
 | **Help** | `help [COMMAND]`<br> e.g., `help add`                                                                                                                                    |
