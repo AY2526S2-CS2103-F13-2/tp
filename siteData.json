@@ -166,7 +166,16 @@
     },
     {
       "src": "team/poise3.md",
-      "headings": {},
+      "headings": {
+        "ong-jin-hui-project-portfolio-for-triplog": "Ong Jin Hui - Project Portfolio for TripLog",
+        "project-overview": "Project Overview",
+        "summary-of-contributions": "Summary of Contributions",
+        "contributions-to-the-user-guide": "Contributions to the User Guide",
+        "contributions-to-the-developer-guide": "Contributions to the Developer Guide",
+        "trip-creation-add-command": "Trip Creation: Add Command",
+        "contributions-to-team-tasks": "Contributions to Team Tasks",
+        "review-of-alpha-bugs-reported": "Review of Alpha Bugs Reported"
+      },
       "headingKeywords": {}
     },
     {
