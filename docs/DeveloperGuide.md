@@ -197,7 +197,7 @@ The following sequence diagram illustrates the process of filtering a trip:
 
 <puml src="diagrams/FilterSequenceDiagram.puml" alt="Filter Command Sequence Diagram" />
 
-### Trip Statistics and Multi-Key Sorting
+### Trip Listing and Sorting: List Command
 
 #### Implementation
 
