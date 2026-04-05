@@ -56,7 +56,7 @@
         "trip-deletion-delete-command": "Trip Deletion: Delete Command",
         "tagging-trips-tag-command": "Tagging Trips: Tag Command",
         "filtering-trips-by-date-filter-command": "Filtering Trips by Date: Filter Command",
-        "trip-statistics-and-multi-key-sorting": "Trip Statistics and Multi-Key Sorting",
+        "trip-listing-and-sorting-list-command": "Trip Listing and Sorting: List Command",
         "help-command": "Help command",
         "documentation-logging-testing-configuration-dev-ops": "Documentation, logging, testing, configuration, dev-ops",
         "appendix-requirements": "Appendix: Requirements",
