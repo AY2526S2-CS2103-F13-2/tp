@@ -170,6 +170,21 @@
       "headingKeywords": {}
     },
     {
+      "src": "team/lyx-888.md",
+      "headings": {
+        "leong-yi-xuan-project-portfolio-for-triplog": "Leong Yi Xuan - Project Portfolio for TripLog",
+        "project-overview": "Project Overview",
+        "summary-of-contributions": "Summary of Contributions",
+        "contributions-to-the-user-guide": "Contributions to the User Guide",
+        "deleting-trip-s-delete": "Deleting trip(s): delete",
+        "contributions-to-the-developer-guide": "Contributions to the Developer Guide",
+        "trip-deletion-delete-command": "Trip Deletion: Delete Command",
+        "contributions-to-team-tasks": "Contributions to Team Tasks",
+        "review-of-alpha-bugs-reported": "Review of Alpha Bugs Reported"
+      },
+      "headingKeywords": {}
+    },
+    {
       "src": "team/mingjelly.md",
       "headings": {},
       "headingKeywords": {}
