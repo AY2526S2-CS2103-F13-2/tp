@@ -69,6 +69,7 @@
         "appendix-instructions-for-manual-testing": "Appendix: Instructions for manual testing",
         "launch-and-shutdown": "Launch and shutdown",
         "command-word-case-insensitivity": "Command Word Case-Insensitivity",
+        "adding-a-trip": "Adding a trip",
         "listing-sorting-and-statistics": "Listing, Sorting, and Statistics",
         "locating-trips-by-name": "Locating trips by name",
         "deleting-a-trip": "Deleting a trip",
@@ -198,6 +199,7 @@
         "contributions-to-the-user-guide": "Contributions to the User Guide",
         "contributions-to-the-developer-guide": "Contributions to the Developer Guide",
         "trip-creation-add-command": "Trip Creation: Add Command",
+        "adding-a-trip": "Adding a trip",
         "contributions-to-team-tasks": "Contributions to Team Tasks",
         "review-of-alpha-bugs-reported": "Review of Alpha Bugs Reported"
       },
