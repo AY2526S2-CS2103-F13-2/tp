@@ -190,7 +190,18 @@
     },
     {
       "src": "team/mingjelly.md",
-      "headings": {},
+      "headings": {
+        "yap-ming-yang-project-portfolio-for-triplog": "Yap Ming Yang - Project Portfolio for TripLog",
+        "project-overview": "Project Overview",
+        "summary-of-contributions": "Summary of Contributions",
+        "contributions-to-the-user-guide": "Contributions to the User Guide",
+        "tagging-a-trip-tag": "Tagging a trip : tag",
+        "contributions-to-the-developer-guide": "Contributions to the Developer Guide",
+        "tagging-trips-tag-command": "Tagging Trips: Tag Command",
+        "tagging-a-trip": "Tagging a trip",
+        "contributions-to-team-tasks": "Contributions to Team Tasks",
+        "review-of-alpha-bugs-reported": "Review of Alpha Bugs Reported"
+      },
       "headingKeywords": {}
     },
     {
