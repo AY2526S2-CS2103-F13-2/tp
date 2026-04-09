@@ -151,6 +151,22 @@
       "headingKeywords": {}
     },
     {
+      "src": "team/2520th.md",
+      "headings": {
+        "guangyi-zhou-project-portfolio-for-triplog": "Guangyi Zhou - Project Portfolio for TripLog",
+        "project-overview": "Project Overview",
+        "summary-of-contributions": "Summary of Contributions",
+        "contributions-to-the-user-guide": "Contributions to the User Guide",
+        "creating-a-filter-context-filter": "Creating a filter context: filter",
+        "contributions-to-the-developer-guide": "Contributions to the Developer Guide",
+        "user-stories": "User Stories",
+        "filter-command": "Filter Command",
+        "contributions-to-team-tasks": "Contributions to Team Tasks",
+        "review-of-alpha-bugs-reported": "Review of Alpha Bugs Reported"
+      },
+      "headingKeywords": {}
+    },
+    {
       "src": "team/derrikzzz.md",
       "headings": {
         "derrick-low-project-portfolio-for-triplog": "Derrick Low - Project Portfolio for TripLog",
