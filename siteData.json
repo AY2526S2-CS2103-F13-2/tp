@@ -182,14 +182,6 @@
       "headingKeywords": {}
     },
     {
-      "src": "team/johndoe.md",
-      "title": "John Doe's Project Portfolio Page",
-      "headings": {
-        "project-addressbook-level-3": "Project: AddressBook Level 3"
-      },
-      "headingKeywords": {}
-    },
-    {
       "src": "team/lyx-888.md",
       "headings": {
         "leong-yi-xuan-project-portfolio-for-triplog": "Leong Yi Xuan - Project Portfolio for TripLog",
